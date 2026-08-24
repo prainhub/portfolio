@@ -23,9 +23,14 @@
         <span>🧠 AI / Full-Stack focus</span>
       </div>
     </div>
-    <div class="hero-visual" aria-hidden="true">
-      <div class="hero-visual-ring"></div>
-      <canvas class="node-canvas"></canvas>
+    <div class="hero-visual">
+      <div class="hero-visual-ring" aria-hidden="true"></div>
+      <canvas class="node-canvas" aria-hidden="true"></canvas>
+      {% if profile.photo %}
+      <div class="hero-photo reveal-media">
+        <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" loading="lazy">
+      </div>
+      {% endif %}
     </div>
   </div>
   <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
