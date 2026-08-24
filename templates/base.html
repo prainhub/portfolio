@@ -28,7 +28,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
@@ -79,8 +79,12 @@
   <div class="loader-bar"><span></span></div>
 </div>
 
+<div class="top-accent-bar" aria-hidden="true"></div>
 <header class="nav">
-  <a href="#home" class="nav-brand">{{ profile.full_name|default:"Prajin S"|initials }}<span>.</span></a>
+  <div class="nav-left">
+    <a href="#home" class="nav-logo" aria-label="{{ profile.full_name|default:'Prajin S' }} — Home">{{ profile.full_name|default:"Prajin S"|initials }}</a>
+    {% if profile.location %}<span class="nav-location">📍 {{ profile.location|upper }}</span>{% endif %}
+  </div>
   <nav class="nav-links" aria-label="Primary">
     <a class="nav-link" href="#home">Home</a>
     <a class="nav-link" href="#about">About</a>
@@ -93,6 +97,7 @@
     <a class="nav-link" href="#contact">Contact</a>
   </nav>
   <div class="nav-actions">
+    {% if profile.email %}<a class="nav-email" href="mailto:{{ profile.email }}">{{ profile.email }}</a>{% endif %}
     {% for link in social_links %}
       {% if link.platform == 'github' or link.platform == 'linkedin' %}
       <a class="icon-link" href="{{ link.url }}" target="_blank" rel="noopener" aria-label="{{ link.get_platform_display }}">

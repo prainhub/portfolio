@@ -30,7 +30,16 @@ class Profile(models.Model):
         upload_to="profile/",
         blank=True,
         null=True,
-        help_text="Shown in the About section. Optional — the section adapts if left blank.",
+        help_text="Professional headshot, shown in the About section. Optional.",
+    )
+    illustration = models.ImageField(
+        upload_to="profile/",
+        blank=True,
+        null=True,
+        help_text=(
+            "Stylised/illustrated character art, shown centered in the hero. "
+            "Optional — the hero falls back to the AI particle visual alone."
+        ),
     )
 
     def __str__(self):

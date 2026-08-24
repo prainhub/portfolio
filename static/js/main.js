@@ -271,7 +271,7 @@
 
   /* ---------------- Hero kinetic text reveal ---------------------------- */
   function initHeroReveal() {
-    var heading = document.querySelector(".hero-name");
+    var heading = document.querySelector(".hero-poster-title");
     if (!heading) return;
     if (prefersReducedMotion) return;
 

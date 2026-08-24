@@ -118,11 +118,17 @@ Everything in `/admin/` is editable without touching code:
   standard list/edit screens, with `order` fields for display order.
 - **SocialLink** — add GitHub/LinkedIn/etc. rows here; the nav, hero, and
   footer render them automatically once present.
-- **Profile → photo** — upload a headshot on the `Profile` row; it appears
-  in the hero (circular frame inside the AI particle ring, next to your
-  name) and again in the About section (framed portrait), both with an
-  animated reveal. Leave it blank and both sections adapt with no gap.
-  Project images/screenshots work the same way on each `Project`.
+- **Profile → photo** — professional headshot, shown in the About section
+  (framed portrait) and, if no `illustration` is set, centered in the hero
+  inside the AI particle ring. Optional.
+- **Profile → illustration** — a stylised/illustrated character image,
+  shown centered in the hero between two rows of project screenshots
+  (matches the current hero layout). Takes priority over `photo` in the
+  hero when both are set. Optional — the hero falls back to the AI
+  particle ring alone if neither is uploaded.
+- Project images/screenshots work the same way on each `Project`, and also
+  populate the hero's flanking screenshot cards (first 4 projects, 2 per
+  side) once uploaded.
 - **ContactMessage** — read submissions and mark them read/unread from the
   admin; use the bulk actions for multiple messages at once.
 
