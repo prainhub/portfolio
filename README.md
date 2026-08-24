@@ -1,0 +1,156 @@
+# Prajin S — Portfolio
+
+A full-stack personal portfolio built with **Python + Django**, presenting Prajin S
+as a fresher Python Developer / Junior AI Engineer. Every piece of professional
+content (projects, experience, education, skills, certifications) is stored in
+the database and editable from the Django admin — nothing is hardcoded into the
+templates. Content is sourced entirely from the resume; see
+[`PORTFOLIO_PLAN.md`](PORTFOLIO_PLAN.md) for the content map.
+
+## Features
+
+- Django-templated, server-rendered site (no SPA build step) with a hand-built
+  dark-first design system, light mode toggle (persisted in `localStorage`),
+  and a restrained motion system (loader, scroll-reveal, magnetic-ish hover,
+  custom cursor on desktop) — all respecting `prefers-reduced-motion`.
+- Content-managed via Django models: `Profile`, `SocialLink`, `Experience`,
+  `Project` (+ features/screenshots), `Skill`, `Education`, `Certification`,
+  `CurrentlyLearning`, `ContactMessage`.
+- Project detail pages (`/projects/<slug>/`) with problem → solution →
+  architecture → challenges → future improvements, generated from real project
+  data.
+- Contact form with server-side validation, DB storage, and a JS `fetch()`
+  submission (graceful HTML-form fallback without JS).
+- Optional read-only JSON API (`/api/projects/`, `/api/skills/`,
+  `/api/experience/`, `/api/contact/`) — no DRF, just `JsonResponse`.
+- SEO: per-page meta/Open Graph/Twitter tags, JSON-LD (`Person`, `WebSite`,
+  `SoftwareApplication` on project pages), `sitemap.xml`, `robots.txt`.
+- GitHub activity section that only renders if `GITHUB_USERNAME` is set, and
+  fails silently (hides itself) if the GitHub API is unreachable.
+- Custom, on-brand `404.html` / `500.html` (only used when `DEBUG=False`).
+- Environment-driven settings (`.env`), WhiteNoise for production static
+  files, security hardening that activates automatically when `DEBUG=False`.
+
+## Tech stack
+
+- **Backend:** Python, Django 5, Django ORM, SQLite (dev) / PostgreSQL-ready (prod)
+- **Frontend:** Django templates, hand-written CSS (no Tailwind build step —
+  see rationale in `PORTFOLIO_PLAN.md`), vanilla JavaScript (loader, theme
+  toggle, mobile nav, scroll-reveal, cursor, project filter, contact form)
+- **Static/media:** WhiteNoise (compressed, hashed static files), Pillow for
+  image fields
+- **Deployment:** gunicorn/uvicorn-ready WSGI/ASGI entrypoints
+
+## Project structure
+
+```
+portfolio/
+├── manage.py
+├── requirements.txt
+├── .env.example
+├── PORTFOLIO_PLAN.md
+├── config/            # settings, urls, wsgi, asgi
+├── core/               # models, admin, views, urls, forms, seed command
+│   └── management/commands/seed_portfolio.py
+├── templates/
+│   ├── base.html
+│   ├── robots.txt
+│   ├── 404.html / 500.html
+│   └── core/ (home.html, project_detail.html)
+├── static/{css,js,images,icons}
+└── media/{resume,projects}
+```
+
+## Getting started
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+cp .env.example .env        # then edit values as needed
+
+python manage.py migrate
+python manage.py seed_portfolio   # loads the real resume-driven content
+python manage.py createsuperuser  # for /admin/ access
+
+python manage.py runserver
+```
+
+Visit `http://127.0.0.1:8000/` for the site and `/admin/` for content
+management.
+
+## Environment variables
+
+See `.env.example` for the full list. Key ones:
+
+| Variable | Purpose |
+|---|---|
+| `SECRET_KEY` | Django secret key — generate a real one for production |
+| `DEBUG` | `True` locally, `False` in production |
+| `ALLOWED_HOSTS` | Comma-separated hostnames |
+| `DATABASE_URL` | Leave blank for SQLite; set `postgres://...` in production |
+| `GITHUB_USERNAME` | Optional — enables the GitHub activity section |
+| `RESUME_FILE_NAME` | Filename to look for in `media/resume/` |
+| `EMAIL_*` | Contact form email delivery (defaults to console backend) |
+
+Never commit `.env` — it's already in `.gitignore`.
+
+## Replacing the resume
+
+Drop your PDF at `media/resume/resume.pdf` (or set `RESUME_FILE_NAME` in
+`.env` to a different filename). The "Download Resume" / "View Resume"
+buttons detect the file automatically and hide themselves if it's missing —
+nothing else to configure.
+
+## Adding / editing content
+
+Everything in `/admin/` is editable without touching code:
+
+- **Projects** — add a `Project`, its `ProjectFeature` bullet points, and
+  optional `ProjectScreenshot`s inline. `order` and `featured` control
+  homepage placement.
+- **Experience / Education / Certifications / Skills / CurrentlyLearning** —
+  standard list/edit screens, with `order` fields for display order.
+- **SocialLink** — add GitHub/LinkedIn/etc. rows here; the nav, hero, and
+  footer render them automatically once present.
+- **ContactMessage** — read submissions and mark them read/unread from the
+  admin; use the bulk actions for multiple messages at once.
+
+Alternatively, edit `core/management/commands/seed_portfolio.py` and re-run
+`python manage.py seed_portfolio` (it's idempotent — safe to re-run).
+
+## Running checks
+
+```bash
+python manage.py check
+python manage.py check --deploy   # run with DEBUG=False env vars for real output
+python manage.py makemigrations --check
+python manage.py migrate
+python manage.py collectstatic --noinput
+```
+
+## Deployment
+
+1. Set real env vars (`SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`,
+   `DATABASE_URL`, `CSRF_TRUSTED_ORIGINS`, email settings).
+2. `pip install -r requirements.txt`
+3. `python manage.py migrate`
+4. `python manage.py collectstatic --noinput`
+5. Serve with a real application server — **not** `manage.py runserver`:
+   ```bash
+   gunicorn config.wsgi:application --bind 0.0.0.0:8000
+   # or
+   uvicorn config.asgi:application --host 0.0.0.0 --port 8000
+   ```
+6. Put a reverse proxy (nginx, Caddy, your platform's router) in front for
+   TLS termination. With `DEBUG=False`, `SECURE_SSL_REDIRECT`, HSTS, and
+   secure cookies are enabled automatically (see `config/settings.py`).
+
+## Notes on content honesty
+
+Every project, internship, skill, education entry, and certification on this
+site comes directly from the resume behind it — nothing is invented. Sections
+that the resume doesn't support (e.g. hackathons/achievements, GitHub/LinkedIn
+links) are simply omitted or left as easy-to-fill admin fields rather than
+padded with placeholder claims.

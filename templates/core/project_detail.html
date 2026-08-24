@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ project.title }} — {{ profile.full_name|default:"Prajin S" }}{% endblock %}
+{% block description %}{{ project.short_description }}{% endblock %}
+{% block og_title %}{{ project.title }}{% endblock %}
+{% block og_description %}{{ project.short_description }}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "{{ project.title }}",
+  "description": "{{ project.short_description|escapejs }}",
+  "applicationCategory": "{{ project.get_category_display }}",
+  "author": { "@type": "Person", "name": "{{ profile.full_name|default:'Prajin S' }}" }
+  {% if project.github_url %}, "codeRepository": "{{ project.github_url }}"{% endif %}
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="section detail-hero">
+  <div class="container">
+    <a href="{% url 'core:home' %}#projects" class="back-link reveal is-visible">← Back to projects</a>
+    <div class="detail-kicker reveal is-visible">
+      <span class="badge badge-accent">{{ project.get_category_display }}</span>
+      {% if project.timeframe %}<span class="badge">{{ project.timeframe }}</span>{% endif %}
+    </div>
+    <h1 class="detail-title reveal is-visible">{{ project.title }}</h1>
+    <p class="detail-desc reveal is-visible">{{ project.short_description }}</p>
+    <div class="detail-links reveal is-visible">
+      {% if project.github_url %}<a class="btn btn-outline" href="{{ project.github_url }}" target="_blank" rel="noopener">View on GitHub ↗</a>{% endif %}
+      {% if project.live_url %}<a class="btn btn-primary" href="{{ project.live_url }}" target="_blank" rel="noopener">Live Demo ↗</a>{% endif %}
+    </div>
+
+    {% if project.image %}
+    <div class="detail-media reveal">
+      <img src="{{ project.image.url }}" alt="{{ project.title }}">
+    </div>
+    {% endif %}
+
+    {% for shot in project.screenshots.all %}
+    <div class="detail-media reveal">
+      <img src="{{ shot.image.url }}" alt="{{ shot.caption|default:project.title }}" loading="lazy">
+    </div>
+    {% endfor %}
+
+    <div class="detail-grid" style="margin-top:3rem;">
+      {% if project.problem_statement %}
+      <div class="detail-block reveal">
+        <h3>Problem</h3>
+        <p>{{ project.problem_statement }}</p>
+      </div>
+      {% endif %}
+      {% if project.solution %}
+      <div class="detail-block reveal">
+        <h3>Solution</h3>
+        <p>{{ project.solution }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if project.features.all %}
+    <div class="detail-block reveal" style="margin-bottom:3.5rem;">
+      <h3>Key features</h3>
+      <ul class="feature-list">
+        {% for feature in project.features.all %}<li>{{ feature.text }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% if project.architecture_steps %}
+    <div class="detail-block reveal" style="margin-bottom:3.5rem;">
+      <h3>Architecture</h3>
+      <div class="arch-flow">
+        {% for step in project.architecture_steps %}
+        <div class="arch-node"><span class="idx">{{ forloop.counter|stringformat:"02d" }}</span><span>{{ step }}</span></div>
+        {% if not forloop.last %}<div class="arch-connector"></div>{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="detail-grid">
+      <div class="detail-block reveal">
+        <h3>Tech stack</h3>
+        <div class="tag-row" style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+          {% for tech in project.technology_list %}<span class="badge">{{ tech }}</span>{% endfor %}
+        </div>
+      </div>
+      {% if project.challenges %}
+      <div class="detail-block reveal">
+        <h3>Challenges &amp; how I solved them</h3>
+        <p>{{ project.challenges }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if project.future_improvements %}
+    <div class="detail-block reveal" style="margin-top:1rem;">
+      <h3>Future improvements</h3>
+      <p>{{ project.future_improvements }}</p>
+    </div>
+    {% endif %}
+
+    {% if related_projects %}
+    <div style="margin-top:4.5rem;">
+      <h3 style="margin-bottom:1.3rem;">More projects</h3>
+      <div class="project-grid">
+        {% for p in related_projects %}
+        <article class="project-card reveal">
+          <div class="project-media">
+            {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.title }}" loading="lazy">{% else %}<div class="project-media-fallback">{{ p.get_category_display }}</div>{% endif %}
+            <span class="badge badge-accent project-cat">{{ p.get_category_display }}</span>
+          </div>
+          <div class="project-body">
+            <h3 class="project-title">{{ p.title }}</h3>
+            <p class="project-desc">{{ p.short_description }}</p>
+            <div class="project-links"><a class="btn btn-sm btn-outline" href="{{ p.get_absolute_url }}">Case study</a></div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

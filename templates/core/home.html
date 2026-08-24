@@ -1,0 +1,428 @@
+{% extends "base.html" %}
+{% load static portfolio_extras %}
+
+{% block content %}
+
+<!-- ============ HERO ============ -->
+<section id="home" class="hero">
+  <div class="grid-noise" aria-hidden="true"></div>
+  <div class="container hero-grid">
+    <div class="reveal is-visible">
+      <p class="hero-eyebrow"><span class="dot"></span>Available for fresher opportunities</p>
+      <h1 class="hero-name">{{ profile.full_name|default:"Prajin S" }}</h1>
+      <p class="hero-headline">{{ profile.headline|default:"Python Developer | Junior AI Engineer" }}</p>
+      <p class="hero-statement"><strong>{{ profile.tagline|default:"I build AI-powered applications and Python backends." }}</strong></p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-outline">Contact Me</a>
+        {% if resume_available %}<a href="{% url 'core:resume_download' %}" class="btn btn-outline">Download Resume</a>{% endif %}
+      </div>
+      <div class="hero-meta">
+        {% if profile.location %}<span>📍 {{ profile.location }}</span>{% endif %}
+        <span>🎓 Final-year B.Tech IT</span>
+        <span>🧠 AI / Full-Stack focus</span>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-visual-ring"></div>
+      <canvas class="node-canvas"></canvas>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<!-- ============ QUICK SNAPSHOT ============ -->
+<section class="snapshot">
+  <div class="snapshot-grid">
+    <div class="snapshot-item reveal">
+      <div class="snapshot-value">{{ snapshot.current_education.degree|default:"B.Tech" }} <span class="accent">IT</span></div>
+      <div class="snapshot-label">Final-year student</div>
+    </div>
+    <div class="snapshot-item reveal">
+      <div class="snapshot-value"><span data-countup="{{ snapshot.projects_count }}">0</span><span class="accent">+</span></div>
+      <div class="snapshot-label">Projects shipped</div>
+    </div>
+    <div class="snapshot-item reveal">
+      <div class="snapshot-value"><span data-countup="{{ snapshot.internships_count }}">0</span></div>
+      <div class="snapshot-label">Internships completed</div>
+    </div>
+    <div class="snapshot-item reveal">
+      <div class="snapshot-value"><span data-countup="{{ snapshot.technologies_count }}">0</span><span class="accent">+</span></div>
+      <div class="snapshot-label">Technologies used</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">01 — About</p>
+      <h2 class="section-title">Who I am, and what I build</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-copy reveal">
+        {% for para in profile.summary|split_paragraphs %}
+        <p>{{ para }}</p>
+        {% endfor %}
+      </div>
+      <dl class="about-facts reveal">
+        <div class="about-fact"><dt>Focus</dt><dd>AI Engineering &amp; Full-Stack Development</dd></div>
+        <div class="about-fact"><dt>Currently</dt><dd>Final-year B.Tech IT student</dd></div>
+        <div class="about-fact"><dt>Core stack</dt><dd>Python, Flask, FastAPI, REST APIs</dd></div>
+        <div class="about-fact"><dt>AI stack</dt><dd>OpenAI API, Gemini API, NLP</dd></div>
+        <div class="about-fact"><dt>Looking for</dt><dd>{{ profile.looking_for|default:"Fresher Python Developer / Junior AI Engineer roles" }}</dd></div>
+        {% if profile.location %}<div class="about-fact"><dt>Based in</dt><dd>{{ profile.location }}</dd></div>{% endif %}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPERIENCE ============ -->
+<section id="experience" class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">02 — Experience</p>
+      <h2 class="section-title">Internships</h2>
+      <p class="section-lede">Two internships so far — data-focused and security-focused — both building the same muscle: shipping working Python.</p>
+    </div>
+    <div class="timeline">
+      {% for exp in experiences %}
+      <div class="timeline-item reveal">
+        <span class="timeline-dot" aria-hidden="true"></span>
+        <div class="timeline-head">
+          <h3 class="timeline-role">{{ exp.role }} — <span class="timeline-company">{{ exp.company }}</span></h3>
+          <span class="timeline-meta">{{ exp.timeframe }}{% if exp.location %} · {{ exp.location }}{% endif %}</span>
+        </div>
+        {% for line in exp.description_lines %}
+        <p class="timeline-desc">{{ line }}</p>
+        {% endfor %}
+        {% if exp.technology_list %}
+        <div class="timeline-tags">
+          {% for tech in exp.technology_list %}<span class="badge">{{ tech }}</span>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% empty %}
+      <p class="section-lede">Experience will appear here once added in the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ SKILLS ============ -->
+<section id="skills" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">03 — Skills</p>
+      <h2 class="section-title">What I work with</h2>
+      <p class="section-lede">Grouped by category — every item here is something I've actually used in a project or internship, not a checklist.</p>
+    </div>
+    <div class="skills-tabs reveal" role="tablist">
+      {% for key, label in skill_categories %}
+      <button class="skills-tab {% if forloop.first %}is-active{% endif %}" type="button" data-tab="{{ key }}" role="tab">{{ label }}</button>
+      {% endfor %}
+    </div>
+    <div class="skills-panels reveal">
+      {% for key, label in skill_categories %}
+      <div class="skills-panel {% if forloop.first %}is-active{% endif %}" data-panel="{{ key }}">
+        {% for skill in skills_by_category|get_item:key %}
+        <div class="skill-card">
+          <span class="skill-glyph">{{ skill.icon|default:skill.name|slice:":2"|upper }}</span>
+          <span class="skill-name">{{ skill.name }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section id="projects" class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">04 — Projects</p>
+      <h2 class="section-title">Featured work</h2>
+      <p class="section-lede">Four projects, each shipped end-to-end — hardware to dashboard, or prompt to production JSON.</p>
+    </div>
+    <div class="filter-row reveal">
+      <button class="filter-btn is-active" type="button" data-filter="all">All</button>
+      {% for key, label in project_categories %}
+      <button class="filter-btn" type="button" data-filter="{{ key }}">{{ label }}</button>
+      {% endfor %}
+    </div>
+    <div class="project-grid reveal-stagger">
+      {% for project in projects %}
+      <article class="project-card reveal {% if project.featured %}project-card--featured{% endif %}" data-category="{{ project.category }}">
+        <div class="project-media">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy">
+          {% else %}
+          <div class="project-media-fallback">{{ project.get_category_display }}</div>
+          {% endif %}
+          <span class="badge badge-accent project-cat">{{ project.get_category_display }}</span>
+        </div>
+        <div class="project-body">
+          <div class="project-title-row">
+            <h3 class="project-title">{{ project.title }}</h3>
+            {% if project.timeframe %}<span class="project-time">{{ project.timeframe }}</span>{% endif %}
+          </div>
+          <p class="project-desc">{{ project.short_description }}</p>
+          <div class="project-tags">
+            {% for tech in project.technology_list|slice:":5" %}<span class="badge">{{ tech }}</span>{% endfor %}
+          </div>
+          <div class="project-links">
+            <a class="btn btn-sm btn-outline" href="{{ project.get_absolute_url }}">Case study</a>
+            {% if project.github_url %}<a class="btn btn-sm btn-ghost" href="{{ project.github_url }}" target="_blank" rel="noopener">GitHub ↗</a>{% endif %}
+            {% if project.live_url %}<a class="btn btn-sm btn-ghost" href="{{ project.live_url }}" target="_blank" rel="noopener">Live ↗</a>{% endif %}
+          </div>
+        </div>
+      </article>
+      {% empty %}
+      <p class="section-lede">Projects will appear here once added in the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ AI ENGINEERING ============ -->
+<section id="ai" class="section ai-section">
+  <div class="grid-noise" aria-hidden="true"></div>
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">05 — AI Engineering</p>
+      <h2 class="section-title">Where AI meets backend engineering</h2>
+      <p class="section-lede">The part of the stack I'm specializing in: wiring LLM APIs into real backends with structured, reliable outputs.</p>
+    </div>
+
+    <div class="ai-subgrid reveal-stagger">
+      <div class="ai-card reveal">
+        <h3>AI / ML</h3>
+        <p>Core AI/ML skills applied across projects and my Data Science internship.</p>
+        <div class="tag-row">
+          <span class="badge badge-accent">Python (AI/ML)</span>
+          <span class="badge badge-accent">NLP</span>
+          <span class="badge badge-accent">Data Preprocessing</span>
+          <span class="badge badge-accent">ML Model Workflows</span>
+        </div>
+      </div>
+      <div class="ai-card reveal">
+        <h3>Generative AI</h3>
+        <p>LLM integration — calling, prompting, and structuring output from two different providers.</p>
+        <div class="tag-row">
+          <span class="badge badge-accent">OpenAI API</span>
+          <span class="badge badge-accent">Gemini API</span>
+          <span class="badge badge-accent">Prompt Engineering</span>
+        </div>
+      </div>
+      <div class="ai-card reveal">
+        <h3>AI Applications</h3>
+        <p>Where it ships: document intelligence, conversational AI, and structured evaluation.</p>
+        <div class="tag-row">
+          <span class="badge badge-accent">Resume Analyzer</span>
+          <span class="badge badge-accent">AI Chatbot</span>
+          <span class="badge badge-accent">Keyword Extraction</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-workflow reveal">
+      <h3 style="margin-bottom:1.5rem;font-size:1.1rem;">AI workflow — AI Chatbot &amp; Resume Analyzer</h3>
+      <div class="workflow-steps">
+        <div class="workflow-step"><div class="num">01</div><div class="label">User</div></div>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step"><div class="num">02</div><div class="label">React / Chat UI</div></div>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step"><div class="num">03</div><div class="label">Flask / FastAPI backend</div></div>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step"><div class="num">04</div><div class="label">OpenAI / Gemini API</div></div>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step"><div class="num">05</div><div class="label">Structured processing</div></div>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step"><div class="num">06</div><div class="label">Response to UI</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EDUCATION ============ -->
+<section id="education" class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">06 — Education</p>
+      <h2 class="section-title">Academic background</h2>
+    </div>
+    <div class="timeline">
+      {% for edu in education %}
+      <div class="timeline-item reveal">
+        <span class="timeline-dot" aria-hidden="true"></span>
+        <div class="timeline-head">
+          <h3 class="timeline-role">{{ edu.degree }}{% if edu.field %} — {{ edu.field }}{% endif %}</h3>
+          <span class="timeline-meta">{{ edu.year_range }}</span>
+        </div>
+        <p class="timeline-desc">{{ edu.institution }}{% if edu.grade %} · {{ edu.grade }}{% endif %}</p>
+        {% if edu.description %}<p class="timeline-desc">{{ edu.description }}</p>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ CERTIFICATIONS ============ -->
+<section id="certifications" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">07 — Certifications</p>
+      <h2 class="section-title">Certifications</h2>
+    </div>
+    <div class="cert-grid reveal-stagger">
+      {% for cert in certifications %}
+      <div class="cert-card reveal">
+        <div class="cert-name">{{ cert.name }}</div>
+        <div class="cert-org">{{ cert.organization }}</div>
+        <div class="cert-date">{{ cert.issue_date }}</div>
+        {% if cert.credential_url %}<a class="cert-link" href="{{ cert.credential_url }}" target="_blank" rel="noopener">Verify credential ↗</a>{% endif %}
+      </div>
+      {% empty %}
+      <p class="section-lede">Certifications will appear here once added in the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if github %}
+<!-- ============ GITHUB ACTIVITY ============ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">08 — Developer Activity</p>
+      <h2 class="section-title">On GitHub</h2>
+    </div>
+    <div class="gh-stats reveal">
+      <div><div class="gh-stat-value">{{ github.public_repos }}</div><div class="gh-stat-label">Public repos</div></div>
+      <div><div class="gh-stat-value">{{ github.followers }}</div><div class="gh-stat-label">Followers</div></div>
+      <a class="btn btn-outline btn-sm" href="{{ github.profile_url }}" target="_blank" rel="noopener" style="align-self:center;">View profile ↗</a>
+    </div>
+    <div class="gh-grid reveal-stagger">
+      {% for repo in github.repos %}
+      <a class="gh-repo reveal" href="{{ repo.url }}" target="_blank" rel="noopener">
+        <div class="gh-repo-name">{{ repo.name }}</div>
+        <p class="gh-repo-desc">{{ repo.description|default:"No description provided." }}</p>
+        <span class="badge">{{ repo.language|default:"—" }} · ★ {{ repo.stars }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ CURRENTLY LEARNING ============ -->
+{% if currently_learning %}
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">09 — Growth</p>
+      <h2 class="section-title">Currently focused on</h2>
+      <p class="section-lede">I'm continuously improving — here's what I'm actively deepening right now.</p>
+    </div>
+    <div class="learning-grid reveal-stagger">
+      {% for item in currently_learning %}
+      <div class="learning-card reveal">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ RESUME ============ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="resume-panel reveal">
+      <div>
+        <p class="section-eyebrow">10 — Resume</p>
+        <h2 class="section-title" style="font-size:1.6rem;">Get the full picture</h2>
+        <p class="section-lede" style="margin-top:0.6rem;">One PDF — education, internships, projects, and skills.</p>
+      </div>
+      <div class="resume-actions">
+        {% if resume_available %}
+        <a class="btn btn-primary" href="{% url 'core:resume_download' %}">Download Resume</a>
+        <a class="btn btn-outline" href="{% url 'core:resume_view' %}" target="_blank" rel="noopener">View Resume</a>
+        {% else %}
+        <span class="badge">Resume PDF coming soon</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">11 — Contact</p>
+      <h2 class="section-title">Let's talk</h2>
+      <p class="section-lede">Hiring for a fresher Python / AI engineering role, or want to talk about a project? Reach out.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal">
+        {% if profile.email %}
+        <div class="contact-info-item">
+          <span class="icon-link" aria-hidden="true">✉</span>
+          <div><div class="cert-org">Email</div><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></div>
+        </div>
+        {% endif %}
+        {% if profile.phone %}
+        <div class="contact-info-item">
+          <span class="icon-link" aria-hidden="true">☎</span>
+          <div><div class="cert-org">Phone</div><a href="tel:+91{{ profile.phone }}">+91 {{ profile.phone }}</a></div>
+        </div>
+        {% endif %}
+        {% if profile.location %}
+        <div class="contact-info-item">
+          <span class="icon-link" aria-hidden="true">📍</span>
+          <div><div class="cert-org">Location</div><span>{{ profile.location }}</span></div>
+        </div>
+        {% endif %}
+      </div>
+      <form id="contact-form" class="contact-form reveal" action="{% url 'core:contact' %}" method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="field">
+            <label for="id_name">Name</label>
+            {{ contact_form.name }}
+            {% for error in contact_form.name.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="field">
+            <label for="id_email">Email</label>
+            {{ contact_form.email }}
+            {% for error in contact_form.email.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+        </div>
+        <div class="field">
+          <label for="id_subject">Subject</label>
+          {{ contact_form.subject }}
+          {% for error in contact_form.subject.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+        </div>
+        <div class="field">
+          <label for="id_message">Message</label>
+          {{ contact_form.message }}
+          {% for error in contact_form.message.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+        </div>
+        <button class="btn btn-primary contact-submit" type="submit">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-label">Send message</span>
+        </button>
+        <div class="form-status" role="status" aria-live="polite" {% if contact_success %}data-success="1"{% endif %}></div>
+        {% if contact_success %}
+        <script>document.addEventListener("DOMContentLoaded", function(){ var s=document.querySelector(".form-status"); s.textContent="Thanks — your message has been sent."; s.className="form-status is-success"; });</script>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

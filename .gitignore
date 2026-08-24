@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.Python
+
+# Virtual env
+.venv/
+venv/
+env/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+/media/*
+!/media/resume/
+!/media/resume/README.md
+!/media/projects/
+!/media/projects/.gitkeep
+
+# Env
+.env
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Node (not used at runtime, kept out just in case)
+node_modules/
