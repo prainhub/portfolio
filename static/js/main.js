@@ -3,6 +3,7 @@
   "use strict";
 
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var lenisInstance = null;
 
   /* ---------------- Loader ---------------- */
   function initLoader() {
@@ -13,9 +14,13 @@
     requestAnimationFrame(function () {
       if (bar) bar.style.width = "100%";
     });
+    var hidden = false;
     var hide = function () {
+      if (hidden) return;
+      hidden = true;
       loader.classList.add("is-hidden");
       document.body.classList.remove("is-loading");
+      document.dispatchEvent(new CustomEvent("portfolio:loaded"));
     };
     var minDelay = prefersReducedMotion ? 0 : 550;
     window.setTimeout(function () {
@@ -27,6 +32,21 @@
     }, minDelay);
     // Safety net so a slow asset never traps the user behind the loader.
     window.setTimeout(hide, 3500);
+  }
+
+  /* ---------------- Smooth scroll (Lenis, wheel/trackpad only) --------- */
+  function initSmoothScroll() {
+    if (prefersReducedMotion || typeof window.Lenis !== "function") return;
+    lenisInstance = new window.Lenis({
+      duration: 1.1,
+      smoothWheel: true,
+      syncTouch: false, // keep native touch scrolling on mobile — better feel + battery
+    });
+    function raf(time) {
+      lenisInstance.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
   }
 
   /* ---------------- Theme toggle ---------------- */
@@ -139,16 +159,20 @@
         var target = document.querySelector(id);
         if (!target) return;
         e.preventDefault();
-        var top = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
-        window.scrollTo({ top: top, behavior: prefersReducedMotion ? "auto" : "smooth" });
+        if (lenisInstance) {
+          lenisInstance.scrollTo(target, { offset: -navHeight, duration: 1.2 });
+        } else {
+          var top = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
+          window.scrollTo({ top: top, behavior: prefersReducedMotion ? "auto" : "smooth" });
+        }
         history.pushState(null, "", id);
       });
     });
   }
 
-  /* ---------------- Scroll reveal ---------------- */
+  /* ---------------- Scroll reveal (text/cards + media clip-reveal) ------ */
   function initReveal() {
-    var items = document.querySelectorAll(".reveal");
+    var items = document.querySelectorAll(".reveal, .reveal-media");
     if (!items.length) return;
     if (prefersReducedMotion || !("IntersectionObserver" in window)) {
       items.forEach(function (el) {
@@ -180,8 +204,11 @@
     if (!isFinePointer || prefersReducedMotion) return;
     var dot = document.createElement("div");
     var ring = document.createElement("div");
+    var label = document.createElement("span");
+    label.className = "cursor-label";
     dot.className = "cursor-dot";
     ring.className = "cursor-ring";
+    ring.appendChild(label);
     document.body.append(dot, ring);
     document.body.classList.add("has-custom-cursor");
 
@@ -200,11 +227,81 @@
 
     var hoverables = "a, button, .filter-btn, .skills-tab, input, textarea";
     document.addEventListener("mouseover", function (e) {
-      if (e.target.closest && e.target.closest(hoverables)) ring.classList.add("is-active");
+      if (!(e.target.closest && e.target.closest(hoverables))) return;
+      ring.classList.add("is-active");
+      var labelTarget = e.target.closest("[data-cursor-text]");
+      if (labelTarget) {
+        label.textContent = labelTarget.getAttribute("data-cursor-text");
+        ring.classList.add("has-label");
+        dot.classList.add("is-hidden");
+      }
     });
     document.addEventListener("mouseout", function (e) {
-      if (e.target.closest && e.target.closest(hoverables)) ring.classList.remove("is-active");
+      if (!(e.target.closest && e.target.closest(hoverables))) return;
+      ring.classList.remove("is-active");
+      if (e.target.closest("[data-cursor-text]")) {
+        ring.classList.remove("has-label");
+        dot.classList.remove("is-hidden");
+      }
     });
+  }
+
+  /* ---------------- Magnetic buttons (desktop, fine pointer) ----------- */
+  function initMagnetic() {
+    var isFinePointer = window.matchMedia("(pointer: fine)").matches;
+    if (!isFinePointer || prefersReducedMotion) return;
+    var targets = document.querySelectorAll(".btn-primary, .btn-outline");
+    targets.forEach(function (el) {
+      el.classList.add("is-magnetic");
+      var pull = 0.35;
+      var max = 12;
+      el.addEventListener("mousemove", function (e) {
+        var rect = el.getBoundingClientRect();
+        var relX = e.clientX - (rect.left + rect.width / 2);
+        var relY = e.clientY - (rect.top + rect.height / 2);
+        var x = Math.max(Math.min(relX * pull, max), -max);
+        var y = Math.max(Math.min(relY * pull, max), -max);
+        el.style.transform = "translate(" + x + "px," + y + "px)";
+      });
+      el.addEventListener("mouseleave", function () {
+        el.style.transform = "";
+      });
+    });
+  }
+
+  /* ---------------- Hero kinetic text reveal ---------------------------- */
+  function initHeroReveal() {
+    var heading = document.querySelector(".hero-name");
+    if (!heading) return;
+    if (prefersReducedMotion) return;
+
+    var text = heading.textContent.trim();
+    var words = text.split(/\s+/);
+    heading.textContent = "";
+    heading.setAttribute("aria-label", text);
+    words.forEach(function (word, i) {
+      var mask = document.createElement("span");
+      mask.className = "word-mask";
+      var inner = document.createElement("span");
+      inner.className = "word";
+      inner.style.setProperty("--word-delay", i * 90 + "ms");
+      inner.textContent = word;
+      inner.setAttribute("aria-hidden", "true");
+      mask.appendChild(inner);
+      heading.appendChild(mask);
+      if (i < words.length - 1) heading.appendChild(document.createTextNode(" "));
+    });
+
+    function reveal() {
+      heading.querySelectorAll(".word-mask").forEach(function (mask) {
+        mask.classList.add("is-revealed");
+      });
+    }
+    if (document.body.classList.contains("is-loading")) {
+      document.addEventListener("portfolio:loaded", reveal, { once: true });
+    } else {
+      requestAnimationFrame(reveal);
+    }
   }
 
   /* ---------------- Project filter ---------------- */
@@ -429,12 +526,15 @@
   /* ---------------- Init ---------------- */
   document.addEventListener("DOMContentLoaded", function () {
     initLoader();
+    initSmoothScroll();
     initTheme();
     initNav();
     initMobileMenu();
     initSmoothAnchors();
     initReveal();
     initCursor();
+    initMagnetic();
+    initHeroReveal();
     initProjectFilter();
     initSkillTabs();
     initContactForm();

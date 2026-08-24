@@ -155,14 +155,14 @@
     <div class="project-grid reveal-stagger">
       {% for project in projects %}
       <article class="project-card reveal {% if project.featured %}project-card--featured{% endif %}" data-category="{{ project.category }}">
-        <div class="project-media">
+        <a class="project-media reveal-media" href="{{ project.get_absolute_url }}" data-cursor-text="View" aria-label="View case study: {{ project.title }}">
           {% if project.image %}
           <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy">
           {% else %}
           <div class="project-media-fallback">{{ project.get_category_display }}</div>
           {% endif %}
           <span class="badge badge-accent project-cat">{{ project.get_category_display }}</span>
-        </div>
+        </a>
         <div class="project-body">
           <div class="project-title-row">
             <h3 class="project-title">{{ project.title }}</h3>

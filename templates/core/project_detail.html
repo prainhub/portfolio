@@ -36,13 +36,13 @@
     </div>
 
     {% if project.image %}
-    <div class="detail-media reveal">
+    <div class="detail-media reveal-media">
       <img src="{{ project.image.url }}" alt="{{ project.title }}">
     </div>
     {% endif %}
 
     {% for shot in project.screenshots.all %}
-    <div class="detail-media reveal">
+    <div class="detail-media reveal-media">
       <img src="{{ shot.image.url }}" alt="{{ shot.caption|default:project.title }}" loading="lazy">
     </div>
     {% endfor %}

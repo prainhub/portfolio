@@ -36,7 +36,11 @@ templates. Content is sourced entirely from the resume; see
 - **Backend:** Python, Django 5, Django ORM, SQLite (dev) / PostgreSQL-ready (prod)
 - **Frontend:** Django templates, hand-written CSS (no Tailwind build step —
   see rationale in `PORTFOLIO_PLAN.md`), vanilla JavaScript (loader, theme
-  toggle, mobile nav, scroll-reveal, cursor, project filter, contact form)
+  toggle, mobile nav, scroll-reveal, magnetic buttons, custom cursor,
+  kinetic hero text reveal, project filter, contact form) plus a single
+  vendored dependency, [Lenis](https://github.com/darkroomengineering/lenis)
+  (self-hosted at `static/js/vendor/`, not loaded from a CDN), for smooth-scroll
+  physics — disabled automatically under `prefers-reduced-motion`
 - **Static/media:** WhiteNoise (compressed, hashed static files), Pillow for
   image fields
 - **Deployment:** gunicorn/uvicorn-ready WSGI/ASGI entrypoints
