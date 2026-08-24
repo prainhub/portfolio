@@ -61,10 +61,17 @@
       <h2 class="section-title">Who I am, and what I build</h2>
     </div>
     <div class="about-grid">
-      <div class="about-copy reveal">
-        {% for para in profile.summary|split_paragraphs %}
-        <p>{{ para }}</p>
-        {% endfor %}
+      <div class="about-primary reveal">
+        {% if profile.photo %}
+        <div class="about-photo reveal-media">
+          <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" loading="lazy">
+        </div>
+        {% endif %}
+        <div class="about-copy">
+          {% for para in profile.summary|split_paragraphs %}
+          <p>{{ para }}</p>
+          {% endfor %}
+        </div>
       </div>
       <dl class="about-facts reveal">
         <div class="about-fact"><dt>Focus</dt><dd>AI Engineering &amp; Full-Stack Development</dd></div>

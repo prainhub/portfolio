@@ -118,6 +118,10 @@ Everything in `/admin/` is editable without touching code:
   standard list/edit screens, with `order` fields for display order.
 - **SocialLink** — add GitHub/LinkedIn/etc. rows here; the nav, hero, and
   footer render them automatically once present.
+- **Profile → photo** — upload a headshot on the `Profile` row; it appears
+  in the About section with a framed, animated reveal. Leave it blank and
+  the section adapts with no gap. Project images/screenshots work the same
+  way on each `Project`.
 - **ContactMessage** — read submissions and mark them read/unread from the
   admin; use the bulk actions for multiple messages at once.
 
