@@ -566,31 +566,6 @@ body.is-loading { overflow: hidden; height: 100vh; }
 .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; padding-top: 1.8rem; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.8rem; }
 .footer-social { display: flex; gap: 0.6rem; }
 
-/* ---------- Custom cursor: original spider mark (desktop, pointer:fine) --
-   Own abstract silhouette — an oval body plus 8 curved legs — not a trace
-   of any trademarked logo. */
-.cursor-spider { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 300; }
-.cursor-spider-mark {
-  position: fixed; top: 0; left: 0; width: 30px; height: 30px; opacity: 0.85;
-  transform: translate(-50%, -50%) scale(1) rotate(0deg);
-  transition: transform var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
-}
-.cursor-spider-mark path {
-  fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round;
-}
-.cursor-spider-mark ellipse { fill: var(--accent); }
-.cursor-spider.is-active .cursor-spider-mark {
-  transform: translate(-50%, -50%) scale(1.5) rotate(10deg); opacity: 1;
-}
-.cursor-label {
-  position: fixed; top: 0; left: 0; white-space: nowrap; pointer-events: none;
-  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.04em; text-transform: uppercase;
-  color: var(--bg); background: var(--accent); padding: 0.2em 0.6em; border-radius: var(--radius-pill);
-  opacity: 0; transition: opacity var(--dur-fast) var(--ease);
-}
-.cursor-spider.has-label .cursor-label { opacity: 1; }
-body.has-custom-cursor, body.has-custom-cursor a, body.has-custom-cursor button { cursor: none; }
-
 /* ---------- Project detail page ---------- */
 .detail-hero { padding-top: 8rem; }
 .detail-kicker { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.2rem; }
@@ -736,7 +711,6 @@ body.panel-open { overflow: hidden; }
   .project-grid { grid-template-columns: 1fr; }
   .project-card--featured { grid-column: span 1; }
   .form-row { grid-template-columns: 1fr; }
-  body.has-custom-cursor .cursor-spider { display: none; }
 }
 
 @media (max-width: 640px) {

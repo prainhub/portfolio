@@ -271,7 +271,7 @@
     <div class="project-grid">
       {% for project in projects %}
       <article class="project-card reveal is-visible {% if project.featured %}project-card--featured{% endif %}" data-category="{{ project.category }}">
-        <a class="project-media" href="{{ project.get_absolute_url }}" data-cursor-text="View" aria-label="View case study: {{ project.title }}">
+        <a class="project-media" href="{{ project.get_absolute_url }}" aria-label="View case study: {{ project.title }}">
           {% if project.image %}
           <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy">
           {% else %}
