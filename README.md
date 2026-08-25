@@ -126,9 +126,12 @@ Everything in `/admin/` is editable without touching code:
   (matches the current hero layout). Takes priority over `photo` in the
   hero when both are set. Optional — the hero falls back to the AI
   particle ring alone if neither is uploaded.
-- Project images/screenshots work the same way on each `Project`, and also
-  populate the hero's flanking screenshot cards (first 4 projects, 2 per
-  side) once uploaded.
+- **Project → image / screenshots** — used on the Projects section card and
+  the project detail page.
+- **Project → hero_image** — a separate image shown only in the homepage
+  hero's floating side cards (first 4 projects, 2 per side), independent
+  of the main project image. Falls back to a plain category label
+  ("AI", "Full Stack", etc.) if left blank.
 - **ContactMessage** — read submissions and mark them read/unread from the
   admin; use the bulk actions for multiple messages at once.
 

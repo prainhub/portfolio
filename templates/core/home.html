@@ -23,8 +23,8 @@
       <div class="hero-flank-track">
         {% for project in projects|slice:":2" %}
         <div class="hero-flank-card">
-          {% if project.image %}
-          <img src="{{ project.image.url }}" alt="" loading="lazy">
+          {% if project.hero_image %}
+          <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
           {% else %}
           <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
           {% endif %}
@@ -32,8 +32,8 @@
         {% endfor %}
         {% for project in projects|slice:":2" %}
         <div class="hero-flank-card">
-          {% if project.image %}
-          <img src="{{ project.image.url }}" alt="" loading="lazy">
+          {% if project.hero_image %}
+          <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
           {% else %}
           <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
           {% endif %}
@@ -81,8 +81,8 @@
       <div class="hero-flank-track">
         {% for project in projects|slice:"2:4" %}
         <div class="hero-flank-card">
-          {% if project.image %}
-          <img src="{{ project.image.url }}" alt="" loading="lazy">
+          {% if project.hero_image %}
+          <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
           {% else %}
           <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
           {% endif %}
@@ -90,8 +90,8 @@
         {% endfor %}
         {% for project in projects|slice:"2:4" %}
         <div class="hero-flank-card">
-          {% if project.image %}
-          <img src="{{ project.image.url }}" alt="" loading="lazy">
+          {% if project.hero_image %}
+          <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
           {% else %}
           <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
           {% endif %}

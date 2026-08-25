@@ -59,6 +59,16 @@ class ProjectAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("title", "slug", "category", "timeframe", "featured", "order")}),
         ("Summary", {"fields": ("short_description", "technologies", "image")}),
+        (
+            "Hero floating card",
+            {
+                "fields": ("hero_image",),
+                "description": (
+                    "Optional — shown only in the homepage hero's floating side "
+                    "cards, separate from the project image above."
+                ),
+            },
+        ),
         ("Links", {"fields": ("github_url", "live_url")}),
         (
             "Project detail page",

@@ -18,6 +18,7 @@ staticfiles/
 !/media/resume/
 !/media/resume/README.md
 !/media/projects/
+/media/projects/*
 !/media/projects/.gitkeep
 
 # Env

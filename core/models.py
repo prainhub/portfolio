@@ -133,6 +133,16 @@ class Project(models.Model):
     technologies = models.CharField(max_length=400, help_text="Comma-separated.")
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default="web")
     image = models.ImageField(upload_to="projects/", blank=True, null=True)
+    hero_image = models.ImageField(
+        upload_to="projects/hero/",
+        blank=True,
+        null=True,
+        help_text=(
+            "Separate image shown only in the homepage hero's floating side "
+            "cards — independent of the main project image above. Falls "
+            "back to a plain category label if left blank."
+        ),
+    )
     github_url = models.URLField(blank=True)
     live_url = models.URLField(blank=True)
     featured = models.BooleanField(default=False)
