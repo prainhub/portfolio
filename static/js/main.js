@@ -49,42 +49,6 @@
     requestAnimationFrame(raf);
   }
 
-  /* ---------------- Theme toggle ---------------- */
-  function initTheme() {
-    var root = document.documentElement;
-    var toggles = document.querySelectorAll("[data-theme-toggle]");
-    var stored = null;
-    try {
-      stored = localStorage.getItem("portfolio-theme");
-    } catch (e) {
-      /* storage unavailable — fall back to default dark theme */
-    }
-    if (stored === "light" || stored === "dark") {
-      root.setAttribute("data-theme", stored);
-    }
-    function currentTheme() {
-      return root.getAttribute("data-theme") === "light" ? "light" : "dark";
-    }
-    function apply(theme) {
-      root.setAttribute("data-theme", theme);
-      toggles.forEach(function (btn) {
-        btn.textContent = theme === "light" ? "🌙" : "☀️";
-        btn.setAttribute("aria-label", theme === "light" ? "Switch to dark mode" : "Switch to light mode");
-      });
-      try {
-        localStorage.setItem("portfolio-theme", theme);
-      } catch (e) {
-        /* ignore */
-      }
-    }
-    apply(currentTheme());
-    toggles.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        apply(currentTheme() === "light" ? "dark" : "light");
-      });
-    });
-  }
-
   /* ---------------- Sticky nav + active section ---------------- */
   function initNav() {
     var nav = document.querySelector(".nav");
@@ -541,7 +505,6 @@
   document.addEventListener("DOMContentLoaded", function () {
     initLoader();
     initSmoothScroll();
-    initTheme();
     initNav();
     initMobileMenu();
     initSmoothAnchors();

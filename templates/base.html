@@ -32,18 +32,6 @@
 
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<script>
-  /* Set theme before first paint to avoid a flash of the wrong theme. */
-  (function () {
-    try {
-      var stored = localStorage.getItem("portfolio-theme");
-      if (stored === "light" || stored === "dark") {
-        document.documentElement.setAttribute("data-theme", stored);
-      }
-    } catch (e) {}
-  })();
-</script>
-
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -106,7 +94,6 @@
       </a>
       {% endif %}
     {% endfor %}
-    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme">☀️</button>
     {% if resume_available %}<a class="btn btn-outline btn-sm" href="{% url 'core:resume_download' %}">Resume</a>{% endif %}
     <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
   </div>
@@ -128,7 +115,6 @@
       <a class="icon-link" href="{{ link.url }}" target="_blank" rel="noopener" aria-label="{{ link.get_platform_display }}">↗</a>
       {% endif %}
     {% endfor %}
-    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme">☀️</button>
   </div>
 </div>
 
