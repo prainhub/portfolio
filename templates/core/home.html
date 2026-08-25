@@ -10,37 +10,59 @@
   <div class="container hero-top reveal is-visible">
     <p class="hero-eyebrow"><span class="dot"></span>Available for fresher opportunities</p>
     <h1 class="hero-poster-title">{{ profile.full_name|default:"Prajin S" }}</h1>
+    <div class="hero-role-cycle" data-role-cycle>
+      <span class="is-active">Python Developer</span>
+      <span>Junior AI Engineer</span>
+      <span>AI Engineering</span>
+      <span>Full&#8209;Stack Development</span>
+    </div>
   </div>
 
   <div class="hero-stage">
     <div class="hero-flank hero-flank-left" aria-hidden="true">
-      {% for project in projects|slice:":2" %}
-      <div class="hero-flank-card">
-        {% if project.image %}
-        <img src="{{ project.image.url }}" alt="" loading="lazy">
-        {% else %}
-        <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
-        {% endif %}
+      <div class="hero-flank-track">
+        {% for project in projects|slice:":2" %}
+        <div class="hero-flank-card">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" alt="" loading="lazy">
+          {% else %}
+          <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+        {% for project in projects|slice:":2" %}
+        <div class="hero-flank-card">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" alt="" loading="lazy">
+          {% else %}
+          <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
 
     <div class="hero-character">
-      {% if profile.illustration %}
-      <div class="hero-illustration reveal-media">
-        <img src="{{ profile.illustration.url }}" alt="{{ profile.full_name }}" loading="lazy">
-      </div>
-      {% else %}
-      <div class="hero-visual">
-        <div class="hero-visual-ring" aria-hidden="true"></div>
-        <canvas class="node-canvas" aria-hidden="true"></canvas>
-        {% if profile.photo %}
-        <div class="hero-photo reveal-media">
-          <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" loading="lazy">
+      <div class="hero-character-art">
+        {% if profile.illustration %}
+        <div class="hero-illustration reveal-media">
+          <img src="{{ profile.illustration.url }}" alt="{{ profile.full_name }}" loading="lazy">
+        </div>
+        {% else %}
+        <div class="hero-visual">
+          <div class="hero-visual-ring" aria-hidden="true"></div>
+          <canvas class="node-canvas" aria-hidden="true"></canvas>
+          {% if profile.photo %}
+          <div class="hero-photo reveal-media">
+            <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" loading="lazy">
+          </div>
+          {% endif %}
         </div>
         {% endif %}
+        <svg class="hero-character-frame" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <rect x="2" y="2" width="96" height="96" rx="6" ry="6"></rect>
+        </svg>
       </div>
-      {% endif %}
       <div class="hero-character-caption">
         <span>{{ profile.headline|default:"Python Developer | Junior AI Engineer"|upper }}</span>
         <span class="dot" aria-hidden="true"></span>
@@ -49,15 +71,26 @@
     </div>
 
     <div class="hero-flank hero-flank-right" aria-hidden="true">
-      {% for project in projects|slice:"2:4" %}
-      <div class="hero-flank-card">
-        {% if project.image %}
-        <img src="{{ project.image.url }}" alt="" loading="lazy">
-        {% else %}
-        <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
-        {% endif %}
+      <div class="hero-flank-track">
+        {% for project in projects|slice:"2:4" %}
+        <div class="hero-flank-card">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" alt="" loading="lazy">
+          {% else %}
+          <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+        {% for project in projects|slice:"2:4" %}
+        <div class="hero-flank-card">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" alt="" loading="lazy">
+          {% else %}
+          <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
   </div>
 

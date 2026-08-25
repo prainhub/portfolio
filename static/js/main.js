@@ -482,6 +482,20 @@
     );
   }
 
+  /* ---------------- Cycling role headline (hero) ------------------------ */
+  function initRoleCycle() {
+    var container = document.querySelector("[data-role-cycle]");
+    if (!container || prefersReducedMotion) return;
+    var spans = container.querySelectorAll("span");
+    if (spans.length < 2) return;
+    var index = 0;
+    setInterval(function () {
+      spans[index].classList.remove("is-active");
+      index = (index + 1) % spans.length;
+      spans[index].classList.add("is-active");
+    }, 2600);
+  }
+
   /* ---------------- Snapshot counters (real DB-backed numbers only) ---- */
   function initCounters() {
     var items = document.querySelectorAll("[data-countup]");
@@ -535,6 +549,7 @@
     initCursor();
     initMagnetic();
     initHeroReveal();
+    initRoleCycle();
     initProjectFilter();
     initSkillTabs();
     initContactForm();
