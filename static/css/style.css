@@ -62,8 +62,32 @@ a { color: inherit; text-decoration: none; }
   --text: #f3f3f1;
   --text-muted: #a3a3ad;
   --text-dim: #6c6c78;
+  --danger: #ff6b7a;
+  --danger-bg: rgba(255, 107, 122, 0.1);
+  --danger-border: rgba(255, 107, 122, 0.3);
   --shadow: 0 20px 60px -25px rgba(0, 0, 0, 0.6);
   --scrollbar: #2a2a32;
+}
+
+/* Light palette — same bold-editorial system, inverted. Applied via
+   data-theme="light" on <html>, set before first paint by the inline
+   script in base.html (localStorage, default dark) and flipped at
+   runtime by .theme-toggle (see initThemeToggle in main.js). */
+[data-theme="light"] {
+  --bg: #f7f6f2;
+  --bg-elevated: #efeee7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f6f2;
+  --border: #e1ded4;
+  --border-strong: #cac6b8;
+  --text: #16161a;
+  --text-muted: #55545f;
+  --text-dim: #86848d;
+  --danger: #d43a4d;
+  --danger-bg: rgba(212, 58, 77, 0.08);
+  --danger-border: rgba(212, 58, 77, 0.3);
+  --shadow: 0 20px 60px -25px rgba(20, 18, 14, 0.18);
+  --scrollbar: #d8d4c8;
 }
 
 html, body {
@@ -209,6 +233,16 @@ body.is-loading { overflow: hidden; height: 100vh; }
   display: grid; place-items: center; color: var(--text-muted); background: var(--bg-card);
 }
 .icon-link:hover { color: var(--accent); border-color: var(--accent); }
+
+.theme-toggle {
+  flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-strong);
+  display: grid; place-items: center; color: var(--text-muted); background: var(--bg-card);
+}
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.theme-icon { width: 18px; height: 18px; }
+.theme-icon-moon { display: none; }
+[data-theme="light"] .theme-icon-sun { display: none; }
+[data-theme="light"] .theme-icon-moon { display: block; }
 
 .nav-toggle {
   display: none; width: 40px; height: 40px; border-radius: 50%;
@@ -542,10 +576,10 @@ body.is-loading { overflow: hidden; height: 100vh; }
   padding: 0.85rem 1rem; color: var(--text); resize: vertical;
 }
 .field input:focus, .field textarea:focus { border-color: var(--accent); }
-.field-error { color: #ff6b7a; font-size: 0.8rem; margin-top: 0.4rem; }
+.field-error { color: var(--danger); font-size: 0.8rem; margin-top: 0.4rem; }
 .form-status { display: none; padding: 0.9rem 1.1rem; border-radius: var(--radius-sm); font-size: 0.9rem; margin-top: 0.3rem; }
 .form-status.is-success { display: block; background: rgba(55, 230, 180, 0.1); color: var(--accent-2); border: 1px solid rgba(55, 230, 180, 0.3); }
-.form-status.is-error { display: block; background: rgba(255, 107, 122, 0.1); color: #ff6b7a; border: 1px solid rgba(255, 107, 122, 0.3); }
+.form-status.is-error { display: block; background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border); }
 .contact-submit { display: flex; align-items: center; gap: 0.7rem; }
 .spinner {
   width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.25); border-top-color: currentColor;

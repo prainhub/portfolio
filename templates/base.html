@@ -1,6 +1,19 @@
 {% load static portfolio_extras %}<!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
+<script>
+// Set the theme before first paint so there's no dark→light flash. Falls
+// back to dark (the site's default) if nothing was saved yet or storage
+// is unavailable (private browsing etc).
+(function () {
+  try {
+    var saved = localStorage.getItem("theme");
+    document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
+  } catch (e) {
+    document.documentElement.setAttribute("data-theme", "dark");
+  }
+})();
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}{{ profile.full_name|default:"Prajin S" }} — {{ profile.headline|default:"Python Developer | Junior AI Engineer" }}{% endblock %}</title>
@@ -95,6 +108,10 @@
       {% endif %}
     {% endfor %}
     {% if resume_available %}<a class="btn btn-outline btn-sm" href="{% url 'core:resume_download' %}">Resume</a>{% endif %}
+    <button class="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false">
+      <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+      <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></svg>
+    </button>
     <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
   </div>
 </header>

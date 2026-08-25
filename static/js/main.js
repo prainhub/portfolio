@@ -61,6 +61,38 @@
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
+  /* ---------------- Theme toggle (dark/light, persisted) ---------------
+     The <html> element's data-theme is already set pre-paint by the
+     inline script in base.html (localStorage, default dark) — this just
+     wires the button to flip it and remember the choice. */
+  function initThemeToggle() {
+    var btn = document.querySelector(".theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    var metaTheme = document.querySelector('meta[name="theme-color"]');
+    var themeColors = { dark: "#0a0a0d", light: "#f7f6f2" };
+
+    function apply(theme) {
+      root.setAttribute("data-theme", theme);
+      btn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+      btn.setAttribute("aria-label", theme === "light" ? "Switch to dark theme" : "Switch to light theme");
+      if (metaTheme) metaTheme.setAttribute("content", themeColors[theme] || themeColors.dark);
+    }
+
+    apply(root.getAttribute("data-theme") === "light" ? "light" : "dark");
+
+    btn.addEventListener("click", function () {
+      var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+      try {
+        localStorage.setItem("theme", next);
+      } catch (e) {
+        // Storage unavailable (private browsing etc) — theme still flips
+        // for this page view, it just won't persist across reloads.
+      }
+      apply(next);
+    });
+  }
+
   /* ---------------- Mobile menu ---------------- */
   function initMobileMenu() {
     var toggle = document.querySelector(".nav-toggle");
@@ -544,6 +576,7 @@
     initLoader();
     initSmoothScroll();
     initNav();
+    initThemeToggle();
     initMobileMenu();
     initPanels();
     initReveal();
