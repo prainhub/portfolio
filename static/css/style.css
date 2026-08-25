@@ -45,6 +45,7 @@ a { color: inherit; text-decoration: none; }
 
   --container: 1180px;
   --gutter: clamp(1.25rem, 4vw, 3rem);
+  --nav-h: 84px;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-fast: 180ms;
@@ -382,12 +383,9 @@ body.is-loading { overflow: hidden; height: 100vh; }
   width: 168px; aspect-ratio: 3 / 4; border-radius: var(--radius-md); overflow: hidden;
   border: 1px solid var(--border); margin-bottom: 1.8rem; background: var(--bg-card);
 }
-/* Higher specificity than the generic .reveal-media img rule, and declares
-   the full transition list itself, so filter doesn't clobber the clip/scale
-   reveal transition (see note on .reveal-media img above). */
-.about-photo.reveal-media img {
+.about-photo img {
   filter: grayscale(45%);
-  transition: filter var(--dur-med) var(--ease), clip-path 1.1s var(--ease), transform 1.1s var(--ease);
+  transition: filter var(--dur-med) var(--ease);
 }
 .about-photo:hover img { filter: grayscale(0%); }
 .about-copy p { color: var(--text-muted); margin-bottom: 1.1rem; white-space: pre-line; }
@@ -649,6 +647,75 @@ body.has-custom-cursor, body.has-custom-cursor a, body.has-custom-cursor button 
 
 /* ---------- Magnetic buttons (desktop, fine pointer) ---------- */
 .is-magnetic { will-change: transform; }
+
+/* =========================================================================
+   Side panels — every nav section opens here instead of a long scroll.
+   Home stays hero + snapshot; About/Experience/Skills/Projects/AI/
+   Education/Certifications/Contact each live in a slide-in drawer.
+   ========================================================================= */
+/* Both sit below the fixed nav (z-index 100/101) and start beneath it, so
+   the header — and every other nav link — stays visible and clickable
+   while a panel is open; switching panels never requires closing first. */
+.panel-backdrop {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(4, 4, 6, 0.72); backdrop-filter: blur(3px);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity var(--dur-med) var(--ease), visibility var(--dur-med);
+}
+.panel-backdrop.is-open { opacity: 1; visibility: visible; pointer-events: auto; }
+
+.side-panel {
+  position: fixed; top: var(--nav-h); right: 0; z-index: 95;
+  width: min(56vw, 760px);
+  height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h));
+  background: var(--bg-elevated); border-left: 1px solid var(--border); border-top: 1px solid var(--border);
+  box-shadow: -30px 0 70px -30px rgba(0, 0, 0, 0.7);
+  transform: translateX(100%);
+  transition: transform 0.5s var(--ease);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.side-panel.is-open { transform: translateX(0); }
+body.panel-open { overflow: hidden; }
+
+.panel-topbar {
+  position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 1.4rem clamp(1.5rem, 4vw, 3rem);
+  background: color-mix(in srgb, var(--bg-elevated) 90%, transparent); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.panel-eyebrow {
+  font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+}
+.panel-close {
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-strong);
+  background: var(--bg-card); color: var(--text); display: grid; place-items: center;
+  font-size: 1.1rem; line-height: 1; flex-shrink: 0;
+}
+.panel-close:hover { border-color: var(--accent); color: var(--accent); }
+
+.panel-inner { padding: 2rem clamp(1.5rem, 4vw, 3rem) 4rem; }
+.panel-title { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2; margin-bottom: 0.4rem; }
+.panel-lede { color: var(--text-muted); font-size: 0.95rem; max-width: 52ch; margin-bottom: 2rem; }
+.panel-block { margin-top: 2.5rem; }
+.panel-block:first-of-type { margin-top: 0; }
+.panel-block h3 { font-size: 1rem; letter-spacing: 0.02em; margin-bottom: 0.9rem; color: var(--text-muted); text-transform: uppercase; font-family: var(--font-mono); font-size: 0.78rem; }
+
+/* Narrow the multi-column grids that assumed full page width */
+.side-panel .about-grid,
+.side-panel .contact-grid,
+.side-panel .project-grid,
+.side-panel .form-row { grid-template-columns: 1fr; gap: 1.5rem; }
+.side-panel .ai-subgrid,
+.side-panel .cert-grid,
+.side-panel .learning-grid,
+.side-panel .gh-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+.side-panel .project-card--featured { grid-column: auto; }
+.side-panel .workflow-steps { flex-direction: column; align-items: flex-start; }
+.side-panel .workflow-arrow { transform: rotate(90deg); justify-content: flex-start; padding-left: 1rem; }
+
+@media (max-width: 860px) {
+  .side-panel { width: 100vw; border-left: none; }
+}
 
 /* =========================================================================
    Responsive

@@ -69,8 +69,26 @@ payloads are simple reads, DRF would be dead weight).
 (category choices), `Education`, `Certification`, `CurrentlyLearning`, `ContactMessage`.
 
 ## Pages
-`/` home (all sections, single scroll), `/projects/<slug>/` project detail,
-`/resume/` view redirect, custom `404.html` / `500.html`.
+`/` home — hero + quick snapshot only; About/Experience/Skills/Projects/AI/
+Education/Certifications/Contact each open as a slide-in side panel from the
+nav (see "Navigation" below), not a long scroll. `/projects/<slug>/` project
+detail (separate full page), `/resume/` view redirect, custom `404.html` /
+`500.html`.
+
+## Navigation — side panels
+Every nav link (`#about`, `#experience`, `#skills`, `#projects`, `#ai`,
+`#education`, `#certifications`, `#contact`) opens a `.side-panel` drawer
+that slides in from the right over a dimmed backdrop, instead of scrolling
+the page. Only one panel is open at a time; switching nav links swaps the
+open panel directly. The panel sits below the fixed header, so the nav
+stays visible and clickable while a panel is open. Handled by `initPanels()`
+in `static/js/main.js`; markup lives in `templates/core/home.html` as
+`<aside class="side-panel" id="...">` elements. Deep-linking a hash (e.g.
+`/#projects`) opens that panel on load. Currently Learning is folded into
+the About panel (as tags); GitHub Activity is folded into the Projects
+panel (as a compact stat/repo strip); the standalone Resume section was
+dropped in favor of the persistent header "Resume" button plus a
+View/Download action inside the About panel.
 
 ## Implementation order
 1. Django project skeleton, settings (env-driven), apps, base template, static dirs

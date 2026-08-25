@@ -59,7 +59,7 @@
 
 {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body{% if contact_success %} data-open-panel="contact"{% endif %}>
 <a class="skip-link" href="#main">Skip to content</a>
 
 <div id="loader" aria-hidden="true">
@@ -70,19 +70,19 @@
 <div class="top-accent-bar" aria-hidden="true"></div>
 <header class="nav">
   <div class="nav-left">
-    <a href="#home" class="nav-logo" aria-label="{{ profile.full_name|default:'Prajin S' }} — Home">{{ profile.full_name|default:"Prajin S"|initials }}</a>
+    <a href="{% url 'core:home' %}#home" class="nav-logo" aria-label="{{ profile.full_name|default:'Prajin S' }} — Home">{{ profile.full_name|default:"Prajin S"|initials }}</a>
     {% if profile.location %}<span class="nav-location">📍 {{ profile.location|upper }}</span>{% endif %}
   </div>
   <nav class="nav-links" aria-label="Primary">
-    <a class="nav-link" href="#home">Home</a>
-    <a class="nav-link" href="#about">About</a>
-    <a class="nav-link" href="#experience">Experience</a>
-    <a class="nav-link" href="#skills">Skills</a>
-    <a class="nav-link" href="#projects">Projects</a>
-    <a class="nav-link" href="#ai">AI</a>
-    <a class="nav-link" href="#education">Education</a>
-    <a class="nav-link" href="#certifications">Certifications</a>
-    <a class="nav-link" href="#contact">Contact</a>
+    <a class="nav-link" href="{% url 'core:home' %}#home">Home</a>
+    <a class="nav-link" href="{% url 'core:home' %}#about">About</a>
+    <a class="nav-link" href="{% url 'core:home' %}#experience">Experience</a>
+    <a class="nav-link" href="{% url 'core:home' %}#skills">Skills</a>
+    <a class="nav-link" href="{% url 'core:home' %}#projects">Projects</a>
+    <a class="nav-link" href="{% url 'core:home' %}#ai">AI</a>
+    <a class="nav-link" href="{% url 'core:home' %}#education">Education</a>
+    <a class="nav-link" href="{% url 'core:home' %}#certifications">Certifications</a>
+    <a class="nav-link" href="{% url 'core:home' %}#contact">Contact</a>
   </nav>
   <div class="nav-actions">
     {% if profile.email %}<a class="nav-email" href="mailto:{{ profile.email }}">{{ profile.email }}</a>{% endif %}
@@ -100,15 +100,15 @@
 </header>
 
 <div class="mobile-menu" aria-hidden="true">
-  <a href="#home">Home</a>
-  <a href="#about">About</a>
-  <a href="#experience">Experience</a>
-  <a href="#skills">Skills</a>
-  <a href="#projects">Projects</a>
-  <a href="#ai">AI</a>
-  <a href="#education">Education</a>
-  <a href="#certifications">Certifications</a>
-  <a href="#contact">Contact</a>
+  <a href="{% url 'core:home' %}#home">Home</a>
+  <a href="{% url 'core:home' %}#about">About</a>
+  <a href="{% url 'core:home' %}#experience">Experience</a>
+  <a href="{% url 'core:home' %}#skills">Skills</a>
+  <a href="{% url 'core:home' %}#projects">Projects</a>
+  <a href="{% url 'core:home' %}#ai">AI</a>
+  <a href="{% url 'core:home' %}#education">Education</a>
+  <a href="{% url 'core:home' %}#certifications">Certifications</a>
+  <a href="{% url 'core:home' %}#contact">Contact</a>
   <div class="nav-actions">
     {% for link in social_links %}
       {% if link.platform == 'github' or link.platform == 'linkedin' %}
@@ -117,6 +117,8 @@
     {% endfor %}
   </div>
 </div>
+
+<div class="panel-backdrop" aria-hidden="true"></div>
 
 <main id="main">
 {% block content %}{% endblock %}
@@ -132,10 +134,10 @@
       <div class="footer-links">
         <div class="footer-col">
           <h4>Navigate</h4>
-          <a href="#projects">Projects</a>
-          <a href="#experience">Experience</a>
-          <a href="#skills">Skills</a>
-          <a href="#contact">Contact</a>
+          <a href="{% url 'core:home' %}#projects">Projects</a>
+          <a href="{% url 'core:home' %}#experience">Experience</a>
+          <a href="{% url 'core:home' %}#skills">Skills</a>
+          <a href="{% url 'core:home' %}#contact">Contact</a>
         </div>
         <div class="footer-col">
           <h4>Connect</h4>

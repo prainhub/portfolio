@@ -49,7 +49,8 @@
     requestAnimationFrame(raf);
   }
 
-  /* ---------------- Sticky nav + active section ---------------- */
+  /* ---------------- Sticky nav (scroll shadow only — active state is
+     driven by which panel is open, see initPanels) ---------------- */
   function initNav() {
     var nav = document.querySelector(".nav");
     if (!nav) return;
@@ -58,30 +59,6 @@
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-
-    var links = document.querySelectorAll(".nav-link[href^='#'], .mobile-menu a[href^='#']");
-    var sections = [];
-    links.forEach(function (link) {
-      var id = link.getAttribute("href").slice(1);
-      var section = document.getElementById(id);
-      if (section) sections.push({ link: link, section: section });
-    });
-    if (sections.length && "IntersectionObserver" in window) {
-      var observer = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (entry) {
-            if (!entry.isIntersecting) return;
-            sections.forEach(function (item) {
-              item.link.classList.toggle("is-active", item.section === entry.target);
-            });
-          });
-        },
-        { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
-      );
-      sections.forEach(function (item) {
-        observer.observe(item.section);
-      });
-    }
   }
 
   /* ---------------- Mobile menu ---------------- */
@@ -113,25 +90,128 @@
     });
   }
 
-  /* ---------------- Smooth anchor scroll (offset for fixed nav) --------- */
-  function initSmoothAnchors() {
-    var navHeight = 84;
-    document.querySelectorAll("a[href^='#']").forEach(function (link) {
-      link.addEventListener("click", function (e) {
-        var id = link.getAttribute("href");
-        if (id.length < 2) return;
-        var target = document.querySelector(id);
-        if (!target) return;
-        e.preventDefault();
-        if (lenisInstance) {
-          lenisInstance.scrollTo(target, { offset: -navHeight, duration: 1.2 });
-        } else {
-          var top = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
-          window.scrollTo({ top: top, behavior: prefersReducedMotion ? "auto" : "smooth" });
-        }
-        history.pushState(null, "", id);
+  /* ---------------- Side panels (About/Experience/Skills/Projects/AI/
+     Education/Certifications/Contact) — slide-in drawers instead of a
+     long scroll. Any link whose hash matches a .side-panel id opens that
+     panel; "#home" (no matching panel) just closes and scrolls to top. --- */
+  function initPanels() {
+    var backdrop = document.querySelector(".panel-backdrop");
+    var panels = document.querySelectorAll(".side-panel");
+    if (!backdrop || !panels.length) return;
+
+    var active = null;
+    var opener = null;
+    var navSelectors = ".nav-link, .mobile-menu a";
+
+    function setActiveNav(id) {
+      document.querySelectorAll(navSelectors).forEach(function (link) {
+        var hash = (link.getAttribute("href") || "").split("#")[1];
+        link.classList.toggle("is-active", id ? hash === id : hash === "home");
       });
+    }
+
+    function trapFocus(e) {
+      if (e.key !== "Tab" || !active) return;
+      var focusable = active.querySelectorAll(
+        'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable.length) return;
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
+    function closePanel() {
+      if (!active) return;
+      active.classList.remove("is-open");
+      active.setAttribute("aria-hidden", "true");
+      backdrop.classList.remove("is-open");
+      document.body.classList.remove("panel-open");
+      setActiveNav(null);
+      if (opener && typeof opener.focus === "function") opener.focus();
+      active = null;
+      opener = null;
+      if (location.hash) history.pushState(null, "", location.pathname + location.search);
+    }
+
+    function openPanel(id, triggerEl) {
+      var panel = document.getElementById(id);
+      if (!panel || !panel.classList.contains("side-panel")) return false;
+      if (active === panel) return true;
+      if (active) {
+        active.classList.remove("is-open");
+        active.setAttribute("aria-hidden", "true");
+      }
+      opener = triggerEl || document.activeElement;
+      active = panel;
+      panel.classList.add("is-open");
+      panel.setAttribute("aria-hidden", "false");
+      backdrop.classList.add("is-open");
+      document.body.classList.add("panel-open");
+      setActiveNav(id);
+      var closeBtn = panel.querySelector(".panel-close");
+      if (closeBtn) closeBtn.focus();
+      return true;
+    }
+
+    document.addEventListener("click", function (e) {
+      var link = e.target.closest("a[href*='#']");
+      if (!link) return;
+      var url;
+      try {
+        url = new URL(link.href, location.href);
+      } catch (err) {
+        return;
+      }
+      if (url.pathname !== location.pathname || !url.hash) return;
+      var id = url.hash.slice(1);
+      if (document.getElementById(id) && document.getElementById(id).classList.contains("side-panel")) {
+        e.preventDefault();
+        openPanel(id, link);
+        history.pushState(null, "", "#" + id);
+      } else if (id === "home") {
+        e.preventDefault();
+        closePanel();
+        if (lenisInstance) lenisInstance.scrollTo(0, { duration: 1 });
+        else window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+        history.pushState(null, "", location.pathname + location.search);
+      }
     });
+
+    backdrop.addEventListener("click", closePanel);
+    panels.forEach(function (panel) {
+      var closeBtn = panel.querySelector(".panel-close");
+      if (closeBtn) closeBtn.addEventListener("click", closePanel);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closePanel();
+      trapFocus(e);
+    });
+    window.addEventListener("popstate", function () {
+      var id = location.hash.slice(1);
+      if (id && document.getElementById(id) && document.getElementById(id).classList.contains("side-panel")) {
+        openPanel(id);
+      } else {
+        closePanel();
+      }
+    });
+
+    if (location.hash) {
+      var initialId = location.hash.slice(1);
+      openPanel(initialId);
+    } else if (document.body.getAttribute("data-open-panel")) {
+      // Server-rendered state (e.g. a non-JS contact form fallback POST)
+      // asked a specific panel to be open on load.
+      var wantedId = document.body.getAttribute("data-open-panel");
+      openPanel(wantedId);
+      history.replaceState(null, "", "#" + wantedId);
+    }
   }
 
   /* ---------------- Scroll reveal (text/cards + media clip-reveal) ------ */
@@ -513,7 +593,7 @@
     initSmoothScroll();
     initNav();
     initMobileMenu();
-    initSmoothAnchors();
+    initPanels();
     initReveal();
     initCursor();
     initMagnetic();

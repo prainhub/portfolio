@@ -137,17 +137,22 @@
   </div>
 </section>
 
-<!-- ============ ABOUT ============ -->
-<section id="about" class="section">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="section-eyebrow">01 — About</p>
-      <h2 class="section-title">Who I am, and what I build</h2>
-    </div>
+<!-- ============ SIDE PANELS ============
+     Every nav section opens here as a slide-in drawer instead of a long
+     scroll. Only one is open at a time — see initPanels() in main.js. -->
+
+<!-- ---- About ---- -->
+<aside class="side-panel" id="about" role="dialog" aria-modal="true" aria-labelledby="panel-about-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">About</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-about-title">Who I am</h2>
     <div class="about-grid">
-      <div class="about-primary reveal">
+      <div class="about-primary reveal is-visible">
         {% if profile.photo %}
-        <div class="about-photo reveal-media">
+        <div class="about-photo">
           <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" loading="lazy">
         </div>
         {% endif %}
@@ -157,7 +162,7 @@
           {% endfor %}
         </div>
       </div>
-      <dl class="about-facts reveal">
+      <dl class="about-facts reveal is-visible">
         <div class="about-fact"><dt>Focus</dt><dd>Python Developer &amp; Junior AI Engineer</dd></div>
         <div class="about-fact"><dt>Currently</dt><dd>B.Tech IT Graduate</dd></div>
         <div class="about-fact"><dt>Core stack</dt><dd>Python, Django, FastAPI, REST APIs</dd></div>
@@ -166,20 +171,40 @@
         {% if profile.location %}<div class="about-fact"><dt>Based in</dt><dd>{{ profile.location }}</dd></div>{% endif %}
       </dl>
     </div>
-  </div>
-</section>
 
-<!-- ============ EXPERIENCE ============ -->
-<section id="experience" class="section section-alt">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="section-eyebrow">02 — Experience</p>
-      <h2 class="section-title">Internships</h2>
-      <p class="section-lede">Two internships so far — data-focused and security-focused — both building the same muscle: shipping working Python.</p>
+    {% if currently_learning %}
+    <div class="panel-block">
+      <h3>Currently learning</h3>
+      <div class="tag-row">
+        {% for item in currently_learning %}
+        <span class="badge badge-accent" title="{{ item.description }}">{{ item.title }}</span>
+        {% endfor %}
+      </div>
     </div>
+    {% endif %}
+
+    {% if resume_available %}
+    <div class="panel-block">
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-sm" href="{% url 'core:resume_download' %}">Download Resume</a>
+        <a class="btn btn-outline btn-sm" href="{% url 'core:resume_view' %}" target="_blank" rel="noopener">View Resume</a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</aside>
+
+<!-- ---- Experience ---- -->
+<aside class="side-panel" id="experience" role="dialog" aria-modal="true" aria-labelledby="panel-experience-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Experience</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-experience-title">Internships</h2>
     <div class="timeline">
       {% for exp in experiences %}
-      <div class="timeline-item reveal">
+      <div class="timeline-item reveal is-visible">
         <span class="timeline-dot" aria-hidden="true"></span>
         <div class="timeline-head">
           <h3 class="timeline-role">{{ exp.role }} — <span class="timeline-company">{{ exp.company }}</span></h3>
@@ -195,26 +220,26 @@
         {% endif %}
       </div>
       {% empty %}
-      <p class="section-lede">Experience will appear here once added in the admin.</p>
+      <p class="panel-lede">Experience will appear here once added in the admin.</p>
       {% endfor %}
     </div>
   </div>
-</section>
+</aside>
 
-<!-- ============ SKILLS ============ -->
-<section id="skills" class="section">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="section-eyebrow">03 — Skills</p>
-      <h2 class="section-title">What I work with</h2>
-      <p class="section-lede">Grouped by category — every item here is something I've actually used in a project or internship, not a checklist.</p>
-    </div>
-    <div class="skills-tabs reveal" role="tablist">
+<!-- ---- Skills ---- -->
+<aside class="side-panel" id="skills" role="dialog" aria-modal="true" aria-labelledby="panel-skills-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Skills</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-skills-title">What I work with</h2>
+    <div class="skills-tabs reveal is-visible" role="tablist">
       {% for key, label in skill_categories %}
       <button class="skills-tab {% if forloop.first %}is-active{% endif %}" type="button" data-tab="{{ key }}" role="tab">{{ label }}</button>
       {% endfor %}
     </div>
-    <div class="skills-panels reveal">
+    <div class="skills-panels reveal is-visible">
       {% for key, label in skill_categories %}
       <div class="skills-panel {% if forloop.first %}is-active{% endif %}" data-panel="{{ key }}">
         {% for skill in skills_by_category|get_item:key %}
@@ -227,26 +252,26 @@
       {% endfor %}
     </div>
   </div>
-</section>
+</aside>
 
-<!-- ============ PROJECTS ============ -->
-<section id="projects" class="section section-alt">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="section-eyebrow">04 — Projects</p>
-      <h2 class="section-title">Featured work</h2>
-      <p class="section-lede">Four projects, each shipped end-to-end — hardware to dashboard, or prompt to production JSON.</p>
-    </div>
-    <div class="filter-row reveal">
+<!-- ---- Projects ---- -->
+<aside class="side-panel" id="projects" role="dialog" aria-modal="true" aria-labelledby="panel-projects-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Projects</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-projects-title">Featured work</h2>
+    <div class="filter-row reveal is-visible">
       <button class="filter-btn is-active" type="button" data-filter="all">All</button>
       {% for key, label in project_categories %}
       <button class="filter-btn" type="button" data-filter="{{ key }}">{{ label }}</button>
       {% endfor %}
     </div>
-    <div class="project-grid reveal-stagger">
+    <div class="project-grid">
       {% for project in projects %}
-      <article class="project-card reveal {% if project.featured %}project-card--featured{% endif %}" data-category="{{ project.category }}">
-        <a class="project-media reveal-media" href="{{ project.get_absolute_url }}" data-cursor-text="View" aria-label="View case study: {{ project.title }}">
+      <article class="project-card reveal is-visible {% if project.featured %}project-card--featured{% endif %}" data-category="{{ project.category }}">
+        <a class="project-media" href="{{ project.get_absolute_url }}" data-cursor-text="View" aria-label="View case study: {{ project.title }}">
           {% if project.image %}
           <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy">
           {% else %}
@@ -261,7 +286,7 @@
           </div>
           <p class="project-desc">{{ project.short_description }}</p>
           <div class="project-tags">
-            {% for tech in project.technology_list|slice:":5" %}<span class="badge">{{ tech }}</span>{% endfor %}
+            {% for tech in project.technology_list|slice:":4" %}<span class="badge">{{ tech }}</span>{% endfor %}
           </div>
           <div class="project-links">
             <a class="btn btn-sm btn-outline" href="{{ project.get_absolute_url }}">Case study</a>
@@ -271,44 +296,59 @@
         </div>
       </article>
       {% empty %}
-      <p class="section-lede">Projects will appear here once added in the admin.</p>
+      <p class="panel-lede">Projects will appear here once added in the admin.</p>
       {% endfor %}
     </div>
-  </div>
-</section>
 
-<!-- ============ AI ENGINEERING ============ -->
-<section id="ai" class="section ai-section">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="section-eyebrow">05 — AI Engineering</p>
-      <h2 class="section-title">Where AI meets backend engineering</h2>
-      <p class="section-lede">The part of the stack I'm specializing in: wiring LLM APIs into real backends with structured, reliable outputs.</p>
+    {% if github %}
+    <div class="panel-block">
+      <h3>On GitHub</h3>
+      <div class="gh-stats reveal is-visible">
+        <div><div class="gh-stat-value">{{ github.public_repos }}</div><div class="gh-stat-label">Public repos</div></div>
+        <div><div class="gh-stat-value">{{ github.followers }}</div><div class="gh-stat-label">Followers</div></div>
+        <a class="btn btn-outline btn-sm" href="{{ github.profile_url }}" target="_blank" rel="noopener" style="align-self:center;">View profile ↗</a>
+      </div>
+      <div class="tag-row" style="margin-top:1rem;">
+        {% for repo in github.repos|slice:":3" %}
+        <a class="badge" href="{{ repo.url }}" target="_blank" rel="noopener">{{ repo.name }} · {{ repo.language|default:"—" }}</a>
+        {% endfor %}
+      </div>
     </div>
+    {% endif %}
+  </div>
+</aside>
 
-    <div class="ai-subgrid reveal-stagger">
-      <div class="ai-card reveal">
+<!-- ---- AI Engineering ---- -->
+<aside class="side-panel" id="ai" role="dialog" aria-modal="true" aria-labelledby="panel-ai-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">AI Engineering</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-ai-title">Where AI meets backend engineering</h2>
+
+    <div class="ai-subgrid">
+      <div class="ai-card reveal is-visible">
         <h3>AI / ML</h3>
-        <p>Core AI/ML skills applied across projects and my Data Science internship.</p>
         <div class="tag-row">
           <span class="badge badge-accent">Python (AI/ML)</span>
           <span class="badge badge-accent">NLP</span>
+          <span class="badge badge-accent">RAG</span>
           <span class="badge badge-accent">Data Preprocessing</span>
           <span class="badge badge-accent">ML Model Workflows</span>
         </div>
       </div>
-      <div class="ai-card reveal">
+      <div class="ai-card reveal is-visible">
         <h3>Generative AI</h3>
-        <p>LLM integration — calling, prompting, and structuring output from two different providers.</p>
         <div class="tag-row">
           <span class="badge badge-accent">OpenAI API</span>
           <span class="badge badge-accent">Gemini API</span>
+          <span class="badge badge-accent">Llama</span>
           <span class="badge badge-accent">Prompt Engineering</span>
         </div>
       </div>
-      <div class="ai-card reveal">
+      <div class="ai-card reveal is-visible">
         <h3>AI Applications</h3>
-        <p>Where it ships: document intelligence, conversational AI, and structured evaluation.</p>
         <div class="tag-row">
           <span class="badge badge-accent">Resume Analyzer</span>
           <span class="badge badge-accent">AI Chatbot</span>
@@ -317,35 +357,38 @@
       </div>
     </div>
 
-    <div class="ai-workflow reveal">
-      <h3 style="margin-bottom:1.5rem;font-size:1.1rem;">AI workflow — AI Chatbot &amp; Resume Analyzer</h3>
-      <div class="workflow-steps">
-        <div class="workflow-step"><div class="num">01</div><div class="label">User</div></div>
-        <div class="workflow-arrow">→</div>
-        <div class="workflow-step"><div class="num">02</div><div class="label">React / Chat UI</div></div>
-        <div class="workflow-arrow">→</div>
-        <div class="workflow-step"><div class="num">03</div><div class="label">Flask / FastAPI backend</div></div>
-        <div class="workflow-arrow">→</div>
-        <div class="workflow-step"><div class="num">04</div><div class="label">OpenAI / Gemini API</div></div>
-        <div class="workflow-arrow">→</div>
-        <div class="workflow-step"><div class="num">05</div><div class="label">Structured processing</div></div>
-        <div class="workflow-arrow">→</div>
-        <div class="workflow-step"><div class="num">06</div><div class="label">Response to UI</div></div>
+    <div class="panel-block">
+      <h3>Workflow — AI Chatbot &amp; Resume Analyzer</h3>
+      <div class="ai-workflow reveal is-visible">
+        <div class="workflow-steps">
+          <div class="workflow-step"><div class="num">01</div><div class="label">User</div></div>
+          <div class="workflow-arrow">→</div>
+          <div class="workflow-step"><div class="num">02</div><div class="label">React / Chat UI</div></div>
+          <div class="workflow-arrow">→</div>
+          <div class="workflow-step"><div class="num">03</div><div class="label">Flask / FastAPI backend</div></div>
+          <div class="workflow-arrow">→</div>
+          <div class="workflow-step"><div class="num">04</div><div class="label">OpenAI / Gemini API</div></div>
+          <div class="workflow-arrow">→</div>
+          <div class="workflow-step"><div class="num">05</div><div class="label">Structured processing</div></div>
+          <div class="workflow-arrow">→</div>
+          <div class="workflow-step"><div class="num">06</div><div class="label">Response to UI</div></div>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</aside>
 
-<!-- ============ EDUCATION ============ -->
-<section id="education" class="section section-alt">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="section-eyebrow">06 — Education</p>
-      <h2 class="section-title">Academic background</h2>
-    </div>
+<!-- ---- Education ---- -->
+<aside class="side-panel" id="education" role="dialog" aria-modal="true" aria-labelledby="panel-education-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Education</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-education-title">Academic background</h2>
     <div class="timeline">
       {% for edu in education %}
-      <div class="timeline-item reveal">
+      <div class="timeline-item reveal is-visible">
         <span class="timeline-dot" aria-hidden="true"></span>
         <div class="timeline-head">
           <h3 class="timeline-role">{{ edu.degree }}{% if edu.field %} — {{ edu.field }}{% endif %}</h3>
@@ -357,108 +400,42 @@
       {% endfor %}
     </div>
   </div>
-</section>
+</aside>
 
-<!-- ============ CERTIFICATIONS ============ -->
-<section id="certifications" class="section">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="section-eyebrow">07 — Certifications</p>
-      <h2 class="section-title">Certifications</h2>
-    </div>
-    <div class="cert-grid reveal-stagger">
+<!-- ---- Certifications ---- -->
+<aside class="side-panel" id="certifications" role="dialog" aria-modal="true" aria-labelledby="panel-certifications-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Certifications</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-certifications-title">Certifications</h2>
+    <div class="cert-grid">
       {% for cert in certifications %}
-      <div class="cert-card reveal">
+      <div class="cert-card reveal is-visible">
         <div class="cert-name">{{ cert.name }}</div>
         <div class="cert-org">{{ cert.organization }}</div>
         <div class="cert-date">{{ cert.issue_date }}</div>
         {% if cert.credential_url %}<a class="cert-link" href="{{ cert.credential_url }}" target="_blank" rel="noopener">Verify credential ↗</a>{% endif %}
       </div>
       {% empty %}
-      <p class="section-lede">Certifications will appear here once added in the admin.</p>
+      <p class="panel-lede">Certifications will appear here once added in the admin.</p>
       {% endfor %}
     </div>
   </div>
-</section>
+</aside>
 
-{% if github %}
-<!-- ============ GITHUB ACTIVITY ============ -->
-<section class="section section-alt">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="section-eyebrow">08 — Developer Activity</p>
-      <h2 class="section-title">On GitHub</h2>
-    </div>
-    <div class="gh-stats reveal">
-      <div><div class="gh-stat-value">{{ github.public_repos }}</div><div class="gh-stat-label">Public repos</div></div>
-      <div><div class="gh-stat-value">{{ github.followers }}</div><div class="gh-stat-label">Followers</div></div>
-      <a class="btn btn-outline btn-sm" href="{{ github.profile_url }}" target="_blank" rel="noopener" style="align-self:center;">View profile ↗</a>
-    </div>
-    <div class="gh-grid reveal-stagger">
-      {% for repo in github.repos %}
-      <a class="gh-repo reveal" href="{{ repo.url }}" target="_blank" rel="noopener">
-        <div class="gh-repo-name">{{ repo.name }}</div>
-        <p class="gh-repo-desc">{{ repo.description|default:"No description provided." }}</p>
-        <span class="badge">{{ repo.language|default:"—" }} · ★ {{ repo.stars }}</span>
-      </a>
-      {% endfor %}
-    </div>
+<!-- ---- Contact ---- -->
+<aside class="side-panel" id="contact" role="dialog" aria-modal="true" aria-labelledby="panel-contact-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Contact</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
   </div>
-</section>
-{% endif %}
-
-<!-- ============ CURRENTLY LEARNING ============ -->
-{% if currently_learning %}
-<section class="section">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="section-eyebrow">09 — Growth</p>
-      <h2 class="section-title">Currently focused on</h2>
-      <p class="section-lede">I'm continuously improving — here's what I'm actively deepening right now.</p>
-    </div>
-    <div class="learning-grid reveal-stagger">
-      {% for item in currently_learning %}
-      <div class="learning-card reveal">
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.description }}</p>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-{% endif %}
-
-<!-- ============ RESUME ============ -->
-<section class="section section-alt">
-  <div class="container">
-    <div class="resume-panel reveal">
-      <div>
-        <p class="section-eyebrow">10 — Resume</p>
-        <h2 class="section-title" style="font-size:1.6rem;">Get the full picture</h2>
-        <p class="section-lede" style="margin-top:0.6rem;">One PDF — education, internships, projects, and skills.</p>
-      </div>
-      <div class="resume-actions">
-        {% if resume_available %}
-        <a class="btn btn-primary" href="{% url 'core:resume_download' %}">Download Resume</a>
-        <a class="btn btn-outline" href="{% url 'core:resume_view' %}" target="_blank" rel="noopener">View Resume</a>
-        {% else %}
-        <span class="badge">Resume PDF coming soon</span>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CONTACT ============ -->
-<section id="contact" class="section">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="section-eyebrow">11 — Contact</p>
-      <h2 class="section-title">Let's talk</h2>
-      <p class="section-lede">Hiring for a fresher Python / AI engineering role, or want to talk about a project? Reach out.</p>
-    </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-contact-title">Let's talk</h2>
+    <p class="panel-lede">Hiring for a fresher Python / AI engineering role, or want to talk about a project? Reach out.</p>
     <div class="contact-grid">
-      <div class="reveal">
+      <div class="reveal is-visible">
         {% if profile.email %}
         <div class="contact-info-item">
           <span class="icon-link" aria-hidden="true">✉</span>
@@ -478,7 +455,7 @@
         </div>
         {% endif %}
       </div>
-      <form id="contact-form" class="contact-form reveal" action="{% url 'core:contact' %}" method="post" novalidate>
+      <form id="contact-form" class="contact-form reveal is-visible" action="{% url 'core:contact' %}" method="post" novalidate>
         {% csrf_token %}
         <div class="form-row">
           <div class="field">
@@ -513,6 +490,6 @@
       </form>
     </div>
   </div>
-</section>
+</aside>
 
 {% endblock %}

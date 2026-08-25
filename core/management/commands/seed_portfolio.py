@@ -287,6 +287,7 @@ SKILLS = {
         "OpenAI API",
         "Gemini API",
         "Llama",
+        "RAG",
         "NLP",
         "Prompt Engineering",
         "ML Model Workflows",
