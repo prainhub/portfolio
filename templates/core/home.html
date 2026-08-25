@@ -5,14 +5,13 @@
 
 <!-- ============ HERO ============ -->
 <section id="home" class="hero">
-  <div class="grid-noise" aria-hidden="true"></div>
 
   <div class="container hero-top reveal is-visible">
     <p class="hero-eyebrow"><span class="dot"></span>Available for fresher opportunities</p>
     <h1 class="hero-poster-title">{{ profile.full_name|default:"Prajin S" }}</h1>
     <div class="hero-role-cycle" data-role-cycle>
       <span class="is-active">Python Developer</span>
-      <span>Junior AI Engineer</span>
+      <span>Intern at TechJays</span>
       <span>AI Engineering</span>
       <span>Full&#8209;Stack Development</span>
     </div>
@@ -113,11 +112,6 @@
       <a href="#contact" class="btn btn-outline">Contact Me</a>
       {% if resume_available %}<a href="{% url 'core:resume_download' %}" class="btn btn-outline">Download Resume</a>{% endif %}
     </div>
-    <div class="hero-meta">
-      {% if profile.location %}<span>📍 {{ profile.location }}</span>{% endif %}
-      <span>🎓 B.Tech IT Graduate</span>
-      <span>🧠 AI / Full-Stack focus</span>
-    </div>
   </div>
 </section>
 
@@ -126,7 +120,7 @@
   <div class="snapshot-grid">
     <div class="snapshot-item reveal">
       <div class="snapshot-value">{{ snapshot.current_education.degree|default:"B.Tech" }} <span class="accent">IT</span></div>
-      <div class="snapshot-label">Final-year student</div>
+      <div class="snapshot-label">Graduate</div>
     </div>
     <div class="snapshot-item reveal">
       <div class="snapshot-value"><span data-countup="{{ snapshot.projects_count }}">0</span><span class="accent">+</span></div>
@@ -164,9 +158,9 @@
         </div>
       </div>
       <dl class="about-facts reveal">
-        <div class="about-fact"><dt>Focus</dt><dd>AI Engineering &amp; Full-Stack Development</dd></div>
-        <div class="about-fact"><dt>Currently</dt><dd>Final-year B.Tech IT student</dd></div>
-        <div class="about-fact"><dt>Core stack</dt><dd>Python, Flask, FastAPI, REST APIs</dd></div>
+        <div class="about-fact"><dt>Focus</dt><dd>Python Developer &amp; Junior AI Engineer</dd></div>
+        <div class="about-fact"><dt>Currently</dt><dd>B.Tech IT Graduate</dd></div>
+        <div class="about-fact"><dt>Core stack</dt><dd>Python, Django, FastAPI, REST APIs</dd></div>
         <div class="about-fact"><dt>AI stack</dt><dd>OpenAI API, Gemini API, NLP</dd></div>
         <div class="about-fact"><dt>Looking for</dt><dd>{{ profile.looking_for|default:"Fresher Python Developer / Junior AI Engineer roles" }}</dd></div>
         {% if profile.location %}<div class="about-fact"><dt>Based in</dt><dd>{{ profile.location }}</dd></div>{% endif %}
@@ -285,7 +279,6 @@
 
 <!-- ============ AI ENGINEERING ============ -->
 <section id="ai" class="section ai-section">
-  <div class="grid-noise" aria-hidden="true"></div>
   <div class="container">
     <div class="section-head reveal">
       <p class="section-eyebrow">05 — AI Engineering</p>

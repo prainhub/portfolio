@@ -162,50 +162,56 @@
     });
   }
 
-  /* ---------------- Custom cursor (desktop, fine pointer only) --------- */
+  /* ---------------- Custom cursor: original spider mark ------------------
+     Desktop, fine pointer only. An original abstract spider silhouette
+     (body + 8 curved legs) — not a trace of any trademarked logo. Follows
+     the pointer with a light lag for a "crawling" feel. */
   function initCursor() {
     var isFinePointer = window.matchMedia("(pointer: fine)").matches;
     if (!isFinePointer || prefersReducedMotion) return;
-    var dot = document.createElement("div");
-    var ring = document.createElement("div");
-    var label = document.createElement("span");
-    label.className = "cursor-label";
-    dot.className = "cursor-dot";
-    ring.className = "cursor-ring";
-    ring.appendChild(label);
-    document.body.append(dot, ring);
+    var wrap = document.createElement("div");
+    wrap.className = "cursor-spider";
+    wrap.innerHTML =
+      '<svg class="cursor-spider-mark" viewBox="0 0 32 32" aria-hidden="true">' +
+      '<path d="M13,10 Q6,6 2,8 M12,13 Q4,11 1,14 M12,16 Q4,17 1,20 M13,19 Q6,22 2,25 ' +
+      'M19,10 Q26,6 30,8 M20,13 Q28,11 31,14 M20,16 Q28,17 31,20 M19,19 Q26,22 30,25"/>' +
+      '<ellipse cx="16" cy="19.5" rx="6" ry="7"/>' +
+      '<ellipse cx="16" cy="10" rx="4" ry="4.5"/>' +
+      "</svg>" +
+      '<span class="cursor-label"></span>';
+    document.body.append(wrap);
     document.body.classList.add("has-custom-cursor");
+    var mark = wrap.querySelector(".cursor-spider-mark");
+    var label = wrap.querySelector(".cursor-label");
 
-    var mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    var mouseX = 0, mouseY = 0, curX = 0, curY = 0;
     window.addEventListener("mousemove", function (e) {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      dot.style.transform = "translate(" + mouseX + "px," + mouseY + "px) translate(-50%,-50%)";
     });
     (function loop() {
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
-      ring.style.transform = "translate(" + ringX + "px," + ringY + "px) translate(-50%,-50%)";
+      curX += (mouseX - curX) * 0.22;
+      curY += (mouseY - curY) * 0.22;
+      mark.style.transform = "translate(" + curX + "px," + curY + "px) translate(-50%,-50%)";
+      label.style.transform = "translate(" + curX + "px," + curY + "px) translate(-50%, 6px)";
       requestAnimationFrame(loop);
     })();
 
     var hoverables = "a, button, .filter-btn, .skills-tab, input, textarea";
     document.addEventListener("mouseover", function (e) {
       if (!(e.target.closest && e.target.closest(hoverables))) return;
-      ring.classList.add("is-active");
+      wrap.classList.add("is-active");
       var labelTarget = e.target.closest("[data-cursor-text]");
       if (labelTarget) {
         label.textContent = labelTarget.getAttribute("data-cursor-text");
-        ring.classList.add("has-label");
-        dot.classList.add("is-hidden");
+        wrap.classList.add("has-label");
       }
     });
     document.addEventListener("mouseout", function (e) {
       if (!(e.target.closest && e.target.closest(hoverables))) return;
-      ring.classList.remove("is-active");
+      wrap.classList.remove("is-active");
       if (e.target.closest("[data-cursor-text]")) {
-        ring.classList.remove("has-label");
-        dot.classList.remove("is-hidden");
+        wrap.classList.remove("has-label");
       }
     });
   }

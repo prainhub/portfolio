@@ -21,9 +21,10 @@ PROFILE = dict(
         "ingestion to a working frontend."
     ),
     summary=(
-        "I'm a final-year B.Tech Information Technology student with practical "
+        "I'm a B.Tech Information Technology graduate with practical "
         "experience building AI-powered applications and Python-based backends "
-        "using the OpenAI and Gemini APIs, FastAPI, Flask, and REST API design. "
+        "using the OpenAI and Gemini APIs, FastAPI, Django, Flask, and REST API "
+        "design. "
         "My projects span the full stack — sensor data pipelines, LLM-backed "
         "tools, and REST services — and I'm comfortable taking a feature from "
         "data ingestion through backend logic to frontend delivery.\n\n"
@@ -52,6 +53,19 @@ SOCIAL_LINKS = [
 ]
 
 EXPERIENCES = [
+    dict(
+        company="TechJays",
+        role="Python Developer Intern",
+        location="",
+        timeframe="[Add dates via /admin/]",
+        description=(
+            "[Placeholder — add your real responsibilities and contributions "
+            "at TechJays here via /admin/. Only the company and role were "
+            "confirmed; nothing else about this internship is invented.]"
+        ),
+        technologies="Python",
+        order=0,
+    ),
     dict(
         company="Pantech IT Solutions",
         role="Data Science Intern",
@@ -272,16 +286,17 @@ SKILLS = {
         "Python (AI/ML)",
         "OpenAI API",
         "Gemini API",
+        "Llama",
         "NLP",
         "Prompt Engineering",
         "ML Model Workflows",
         "Data Preprocessing",
     ],
-    "backend": ["Flask", "FastAPI", "Node.js", "Express.js", "REST API Design"],
+    "backend": ["Django", "FastAPI", "Node.js", "Express.js", "REST API Design"],
     "frontend": ["React.js", "JavaScript", "HTML5", "CSS3", "Responsive UI"],
-    "database": ["MongoDB", "SQL", "CRUD Operations", "JSON Handling"],
-    "cloud": ["Netlify", "GitHub Pages", "API Integration"],
-    "tools": ["Git", "GitHub", "VS Code", "Postman"],
+    "database": ["MongoDB", "PostgreSQL", "SQL", "CRUD Operations", "JSON Handling"],
+    "cloud": ["Docker", "Render", "Cloudinary", "Netlify", "GitHub Pages", "API Integration"],
+    "tools": ["Git", "GitHub", "VS Code", "Postman", "Claude Code", "Docker"],
     "soft": [
         "Problem-Solving",
         "Critical Thinking",
