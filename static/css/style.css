@@ -470,24 +470,6 @@ body.is-loading { overflow: hidden; height: 100vh; }
 }
 .skill-name { font-size: 0.92rem; font-weight: 500; }
 
-/* ---------- AI Engineering ---------- */
-.ai-section { position: relative; overflow: hidden; }
-.ai-subgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.3rem; margin-bottom: 3.5rem; }
-.ai-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.8rem; }
-.ai-card h3 { font-size: 1.05rem; margin-bottom: 0.7rem; }
-.ai-card p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1rem; }
-.ai-card .tag-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-
-.ai-workflow { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: clamp(1.6rem, 4vw, 2.6rem); }
-.workflow-steps { display: flex; align-items: stretch; gap: 0.75rem; flex-wrap: wrap; }
-.workflow-step {
-  flex: 1 1 130px; background: var(--bg-elevated); border: 1px solid var(--border);
-  border-radius: var(--radius-md); padding: 1.1rem 1rem; text-align: center; position: relative;
-}
-.workflow-step .num { font-family: var(--font-mono); color: var(--accent); font-size: 0.72rem; letter-spacing: 0.1em; }
-.workflow-step .label { margin-top: 0.4rem; font-weight: 600; font-size: 0.9rem; }
-.workflow-arrow { display: flex; align-items: center; color: var(--text-dim); font-size: 1.1rem; }
-
 .node-field { position: absolute; inset: 0; opacity: 0.6; pointer-events: none; }
 
 /* ---------- Projects ---------- */
@@ -714,13 +696,10 @@ body.panel-open { overflow: hidden; }
 .side-panel .contact-grid,
 .side-panel .project-grid,
 .side-panel .form-row { grid-template-columns: 1fr; gap: 1.5rem; }
-.side-panel .ai-subgrid,
 .side-panel .cert-grid,
 .side-panel .learning-grid,
 .side-panel .gh-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
 .side-panel .project-card--featured { grid-column: auto; }
-.side-panel .workflow-steps { flex-direction: column; align-items: flex-start; }
-.side-panel .workflow-arrow { transform: rotate(90deg); justify-content: flex-start; padding-left: 1rem; }
 
 @media (max-width: 860px) {
   .side-panel { width: 100vw; border-left: none; }
@@ -731,7 +710,7 @@ body.panel-open { overflow: hidden; }
    ========================================================================= */
 @media (max-width: 1024px) {
   .about-grid, .contact-grid { grid-template-columns: 1fr; }
-  .ai-subgrid, .cert-grid, .learning-grid, .gh-grid { grid-template-columns: repeat(2, 1fr); }
+  .cert-grid, .learning-grid, .gh-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 860px) {
@@ -748,9 +727,7 @@ body.panel-open { overflow: hidden; }
 }
 
 @media (max-width: 640px) {
-  .ai-subgrid, .cert-grid, .learning-grid, .gh-grid { grid-template-columns: 1fr; }
-  .workflow-steps { flex-direction: column; }
-  .workflow-arrow { justify-content: center; transform: rotate(90deg); }
+  .cert-grid, .learning-grid, .gh-grid { grid-template-columns: 1fr; }
   .about-fact { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
   .about-fact dd { text-align: left; }
   .detail-grid { grid-template-columns: 1fr; }

@@ -69,14 +69,14 @@ payloads are simple reads, DRF would be dead weight).
 (category choices), `Education`, `Certification`, `CurrentlyLearning`, `ContactMessage`.
 
 ## Pages
-`/` home — hero + quick snapshot only; About/Experience/Skills/Projects/AI/
+`/` home — hero + quick snapshot only; About/Experience/Skills/Projects/
 Education/Certifications/Contact each open as a slide-in side panel from the
 nav (see "Navigation" below), not a long scroll. `/projects/<slug>/` project
 detail (separate full page), `/resume/` view redirect, custom `404.html` /
 `500.html`.
 
 ## Navigation — side panels
-Every nav link (`#about`, `#experience`, `#skills`, `#projects`, `#ai`,
+Every nav link (`#about`, `#experience`, `#skills`, `#projects`,
 `#education`, `#certifications`, `#contact`) opens a `.side-panel` drawer
 that slides in from the right over a dimmed backdrop, instead of scrolling
 the page. Only one panel is open at a time; switching nav links swaps the
