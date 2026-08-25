@@ -323,14 +323,6 @@ body.is-loading { overflow: hidden; height: 100vh; }
 
 .hero-character { flex-shrink: 0; width: clamp(200px, 22vw, 320px); display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 .hero-character-art { position: relative; width: 100%; }
-.hero-character-frame {
-  position: absolute; inset: -12px; width: calc(100% + 24px); height: calc(100% + 24px); pointer-events: none;
-}
-.hero-character-frame rect {
-  fill: none; stroke: var(--text-dim); stroke-width: 1.2; stroke-dasharray: 6 5;
-  vector-effect: non-scaling-stroke; animation: marchingAnts 22s linear infinite;
-}
-@keyframes marchingAnts { to { stroke-dashoffset: -400; } }
 .hero-illustration img { width: 100%; height: auto; display: block; }
 /* Loads as a flat accent-tinted silhouette, then "inks in" to full color as
    it reveals — higher specificity than .reveal-media img so this owns the
