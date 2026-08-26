@@ -550,11 +550,6 @@ body.is-loading { overflow: hidden; height: 100vh; }
 .gh-stat-value { font-family: var(--font-display); font-size: 1.6rem; }
 .gh-stat-label { color: var(--text-dim); font-size: 0.78rem; }
 
-/* ---------- Resume ---------- */
-.resume-panel { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2rem;
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: clamp(1.8rem, 4vw, 2.8rem); }
-.resume-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; }
-
 /* ---------- Contact ---------- */
 .contact-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 5vw, 4rem); }
 .contact-info-item { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.3rem; }
@@ -730,10 +725,18 @@ body.panel-open { overflow: hidden; }
   .cert-grid, .learning-grid, .gh-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 860px) {
+/* Nav collapses to the hamburger well before the other content
+   breakpoints below: 8 pill links + logo/location + email/resume/theme
+   toggle need roughly 1150px+ to lay out without the (shrinkable)
+   .nav-links flex item being squeezed narrower than its own content,
+   which spills the pills past both edges instead of wrapping. */
+@media (max-width: 1180px) {
   .nav-links, .nav-actions .icon-link, .nav-actions .btn, .nav-email, .nav-location { display: none; }
   .nav-toggle { display: block; }
   .nav-actions { gap: 0.6rem; }
+}
+
+@media (max-width: 860px) {
   .hero-flank { display: none; }
   .hero-floating-icons { display: none; }
   .hero-character { width: clamp(190px, 58vw, 300px); }
@@ -744,10 +747,15 @@ body.panel-open { overflow: hidden; }
 }
 
 @media (max-width: 640px) {
+  /* At this width the eyebrow line wraps to 2 lines; align-items:center
+     then vertically centers the dot against the whole 2-line block
+     instead of the first line, leaving it floating oddly between them.
+     Narrower tracking/size fits it back onto one line, where the dot
+     already sits correctly next to the text. */
+  .hero-eyebrow { font-size: 0.72rem; letter-spacing: 0.1em; gap: 0.5em; }
   .cert-grid, .learning-grid, .gh-grid { grid-template-columns: 1fr; }
   .about-fact { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
   .about-fact dd { text-align: left; }
   .detail-grid { grid-template-columns: 1fr; }
   .footer-top { flex-direction: column; }
-  .resume-panel { flex-direction: column; align-items: flex-start; }
 }
