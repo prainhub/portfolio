@@ -12,7 +12,8 @@ services:
       pip install -r requirements.txt &&
       python manage.py migrate --noinput &&
       python manage.py collectstatic --noinput &&
-      python manage.py seed_portfolio
+      python manage.py seed_portfolio &&
+      python manage.py ensure_superuser
     startCommand: gunicorn config.wsgi:application
     envVars:
       - key: PYTHON_VERSION
@@ -37,6 +38,18 @@ services:
       # means Render will prompt for it when you Apply this blueprint, or
       # you can add it anytime after under the service's Environment tab.
       - key: CLOUDINARY_URL
+        sync: false
+      # Sets your /admin/ login — required, since the free plan has no
+      # Shell tab to run `createsuperuser` interactively (that needs a
+      # paid instance type). ensure_superuser (run on every build, see
+      # above) creates this account from these on first deploy and never
+      # touches its password again afterwards, so changing your password
+      # in /admin/ later is safe — it won't get reset by a later deploy.
+      - key: DJANGO_SUPERUSER_USERNAME
+        sync: false
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
         sync: false
       # Fill these in later (dashboard -> Environment) once you have them —
       # every one is optional and the site degrades gracefully without it:

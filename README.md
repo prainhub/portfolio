@@ -160,35 +160,45 @@ automatically.
    to a repo you own — Render deploys from a repo you control).
 2. Create a free account at [render.com](https://render.com) and connect
    your GitHub account.
-3. Dashboard → **New +** → **Blueprint** → pick the repo → **Apply**.
-   Render reads `render.yaml`, creates the web service + database, and
-   generates a real `SECRET_KEY` automatically.
-4. First deploy takes a few minutes (installs deps, runs migrations,
-   collects static files, seeds the real portfolio content). When it's
-   done you'll have a live URL like `https://prajin-portfolio.onrender.com`.
-5. Create a free **Cloudinary** account at [cloudinary.com](https://cloudinary.com)
-   (no card required) → dashboard → **Account Details** → copy the
-   **API Environment variable** (looks like
-   `cloudinary://123456789012345:AbC-dEfGhIjKlMnOpQrStUvWxYz@your-cloud-name`).
-   In Render, service → **Environment** → add `CLOUDINARY_URL` with that
-   value. This is what makes admin-uploaded images (Profile photo/
-   illustration, Project images) actually stick — see the note below.
-6. Create your login — dashboard → **Shell** tab → run:
-   ```bash
-   python manage.py createsuperuser
-   ```
-   then go to `https://<your-service>.onrender.com/admin/`, log in, and
-   upload your real photo/illustration/project images there. **Uploading
-   locally on your own machine only writes to your local dev database —
-   it never touches the live site.** Every image has to be uploaded once
-   through the live `/admin/` too.
+3. Before clicking Apply, get two things ready — Render will prompt for
+   all of the vars below during the Blueprint setup screen (or you can
+   fill them in anytime after under service → **Environment**):
+   - A free **Cloudinary** account at [cloudinary.com](https://cloudinary.com)
+     (no card required) → dashboard → **Account Details** → copy the
+     **API Environment variable** (looks like
+     `cloudinary://123456789012345:AbC-dEfGhIjKlMnOpQrStUvWxYz@your-cloud-name`)
+     → this is `CLOUDINARY_URL`. Makes admin-uploaded images (Profile
+     photo/illustration, Project images) actually stick — see the note
+     below for why.
+   - Your own `/admin/` login: pick a `DJANGO_SUPERUSER_USERNAME`,
+     `DJANGO_SUPERUSER_EMAIL`, and a real `DJANGO_SUPERUSER_PASSWORD`.
+     **The free plan has no Shell tab** to run `createsuperuser`
+     interactively (that needs a paid instance type) — these three env
+     vars are how the account gets created instead (see
+     `ensure_superuser` in the build command). It only runs once: your
+     first deploy creates the account from these, and no later deploy
+     will ever reset its password again, so changing it in `/admin/`
+     afterward is safe.
+4. Dashboard → **New +** → **Blueprint** → pick the repo → fill in the
+   vars from step 3 → **Apply**. Render creates the web service +
+   database and generates a real `SECRET_KEY` automatically.
+5. First deploy takes a few minutes (installs deps, runs migrations,
+   collects static files, seeds the real portfolio content, creates your
+   admin login). When it's done you'll have a live URL like
+   `https://prajin-portfolio.onrender.com`.
+6. Go to `https://<your-service>.onrender.com/admin/`, log in with the
+   `DJANGO_SUPERUSER_*` credentials from step 3, and upload your real
+   photo/illustration/project images there. **Uploading locally on your
+   own machine only writes to your local dev database — it never
+   touches the live site.** Every image has to be uploaded once through
+   the live `/admin/` too.
 7. (Optional) Custom domain: dashboard → **Settings** → **Custom Domains**,
    then set `SITE_DOMAIN` / `SITE_URL` env vars to match.
 
 **Why images can disappear without `CLOUDINARY_URL`:** Render's free web
 service has an *ephemeral* filesystem — anything written at runtime
 (any image uploaded via `/admin/`) is wiped on the next deploy or
-restart. With `CLOUDINARY_URL` set (see step 5), those uploads go to
+restart. With `CLOUDINARY_URL` set (see step 3), those uploads go to
 Cloudinary instead of local disk, so they survive redeploys — do this
 before uploading anything you want to keep. Resume PDFs and project
 images already committed to the repo (`media/resume/`, `media/projects/`
