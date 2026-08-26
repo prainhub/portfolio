@@ -63,7 +63,7 @@
 
   /* ---------------- Theme toggle (dark/light, persisted) ---------------
      The <html> element's data-theme is already set pre-paint by the
-     inline script in base.html (localStorage, default dark) — this just
+     inline script in base.html (localStorage, default light) — this just
      wires the button to flip it and remember the choice. */
   function initThemeToggle() {
     var btn = document.querySelector(".theme-toggle");
@@ -76,10 +76,10 @@
       root.setAttribute("data-theme", theme);
       btn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
       btn.setAttribute("aria-label", theme === "light" ? "Switch to dark theme" : "Switch to light theme");
-      if (metaTheme) metaTheme.setAttribute("content", themeColors[theme] || themeColors.dark);
+      if (metaTheme) metaTheme.setAttribute("content", themeColors[theme] || themeColors.light);
     }
 
-    apply(root.getAttribute("data-theme") === "light" ? "light" : "dark");
+    apply(root.getAttribute("data-theme") === "dark" ? "dark" : "light");
 
     btn.addEventListener("click", function () {
       var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";

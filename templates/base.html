@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
 <script>
-// Set the theme before first paint so there's no dark→light flash. Falls
-// back to dark (the site's default) if nothing was saved yet or storage
+// Set the theme before first paint so there's no light→dark flash. Falls
+// back to light (the site's default) if nothing was saved yet or storage
 // is unavailable (private browsing etc).
 (function () {
   try {
     var saved = localStorage.getItem("theme");
-    document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
+    document.documentElement.setAttribute("data-theme", saved === "dark" ? "dark" : "light");
   } catch (e) {
-    document.documentElement.setAttribute("data-theme", "dark");
+    document.documentElement.setAttribute("data-theme", "light");
   }
 })();
 </script>
@@ -34,8 +34,9 @@
 <meta name="twitter:title" content="{{ profile.full_name|default:'Prajin S' }} — {{ profile.headline|default:'Python Developer | Junior AI Engineer' }}">
 <meta name="twitter:description" content="{{ profile.tagline|default:"AI-powered applications and Python backends." }}">
 
-<!-- Theme-color follows current mode -->
-<meta name="theme-color" content="#0a0a0d">
+<!-- Theme-color follows current mode; #f7f6f2 matches the light-theme
+     default set by the inline script above and initThemeToggle() below -->
+<meta name="theme-color" content="#f7f6f2">
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230a0a0d'/%3E%3Ctext x='50' y='68' font-size='58' font-family='sans-serif' font-weight='700' fill='%237c6cff' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
 
@@ -107,7 +108,7 @@
       {% endif %}
     {% endfor %}
     {% if resume_available %}<a class="btn btn-outline btn-sm" href="{% url 'core:resume_download' %}">Resume</a>{% endif %}
-    <button class="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false">
+    <button class="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="true">
       <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
       <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></svg>
     </button>
