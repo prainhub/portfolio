@@ -29,6 +29,15 @@ services:
         fromDatabase:
           name: prajin-portfolio-db
           property: connectionString
+      # Strongly recommended on the free plan: this service's filesystem
+      # is wiped on every redeploy/restart, so admin-uploaded images
+      # (Profile photo/illustration, Project images) won't stick around
+      # without it. Get a free CLOUDINARY_URL from cloudinary.com (Account
+      # Details -> API Environment variable) and paste it in — sync:false
+      # means Render will prompt for it when you Apply this blueprint, or
+      # you can add it anytime after under the service's Environment tab.
+      - key: CLOUDINARY_URL
+        sync: false
       # Fill these in later (dashboard -> Environment) once you have them —
       # every one is optional and the site degrades gracefully without it:
       #   GITHUB_USERNAME, RESUME_FILE_NAME, EMAIL_HOST / EMAIL_HOST_USER /

@@ -141,14 +141,36 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Admin-uploaded media (Profile photo/illustration, Project image/
+# hero_image/screenshots) goes to local disk by default — fine in dev,
+# and on any host with a persistent filesystem. Set CLOUDINARY_URL to
+# move it to Cloudinary instead: required on hosts with an *ephemeral*
+# filesystem (e.g. Render's free tier), where anything written to disk
+# at runtime — including admin uploads — is wiped on the next deploy or
+# restart. cloudinary/cloudinary_storage read CLOUDINARY_URL from the
+# environment themselves once it's set; no further config needed here.
+CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL", "").strip()
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": (
+            "cloudinary_storage.storage.MediaCloudinaryStorage"
+            if CLOUDINARY_URL
+            else "django.core.files.storage.FileSystemStorage"
+        ),
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+# Legacy mirror of STORAGES["staticfiles"] — some third-party packages
+# (e.g. django-cloudinary-storage's collectstatic override) still read
+# this directly rather than the STORAGES dict above. Deliberately NOT
+# registering "cloudinary_storage" as an app (see MediaCloudinaryStorage
+# below, used purely by import path) sidesteps that package's own
+# collectstatic override entirely, but this stays as a harmless,
+# future-proofing compatibility shim. STORAGES is what Django itself uses.
+STATICFILES_STORAGE = STORAGES["staticfiles"]["BACKEND"]
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"

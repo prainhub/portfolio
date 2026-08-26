@@ -166,25 +166,34 @@ automatically.
 4. First deploy takes a few minutes (installs deps, runs migrations,
    collects static files, seeds the real portfolio content). When it's
    done you'll have a live URL like `https://prajin-portfolio.onrender.com`.
-5. (Optional, for `/admin/`) Open a shell for the service — dashboard →
-   **Shell** tab — and run:
+5. Create a free **Cloudinary** account at [cloudinary.com](https://cloudinary.com)
+   (no card required) → dashboard → **Account Details** → copy the
+   **API Environment variable** (looks like
+   `cloudinary://123456789012345:AbC-dEfGhIjKlMnOpQrStUvWxYz@your-cloud-name`).
+   In Render, service → **Environment** → add `CLOUDINARY_URL` with that
+   value. This is what makes admin-uploaded images (Profile photo/
+   illustration, Project images) actually stick — see the note below.
+6. Create your login — dashboard → **Shell** tab → run:
    ```bash
    python manage.py createsuperuser
    ```
-6. (Optional) Custom domain: dashboard → **Settings** → **Custom Domains**,
+   then go to `https://<your-service>.onrender.com/admin/`, log in, and
+   upload your real photo/illustration/project images there. **Uploading
+   locally on your own machine only writes to your local dev database —
+   it never touches the live site.** Every image has to be uploaded once
+   through the live `/admin/` too.
+7. (Optional) Custom domain: dashboard → **Settings** → **Custom Domains**,
    then set `SITE_DOMAIN` / `SITE_URL` env vars to match.
 
-**Uploaded images will not survive a redeploy on the free plan.** Render's
-free web service has an *ephemeral* filesystem — anything written at
-runtime (profile photo/illustration uploaded via `/admin/`, or any project
-image not already committed to `media/` in git) is wiped on the next
-deploy or restart. Resume PDFs and project images already committed to
-the repo (`media/resume/`, `media/projects/` — see `.gitignore`) are fine,
-since those ship with the code. For photos/illustrations you upload via
-admin to actually persist long-term, either re-upload them after each
-redeploy, or move to persistent storage later (a Render paid disk, or an
-object store like Cloudinary/S3 via `django-storages` — ask if you want
-this wired up).
+**Why images can disappear without `CLOUDINARY_URL`:** Render's free web
+service has an *ephemeral* filesystem — anything written at runtime
+(any image uploaded via `/admin/`) is wiped on the next deploy or
+restart. With `CLOUDINARY_URL` set (see step 5), those uploads go to
+Cloudinary instead of local disk, so they survive redeploys — do this
+before uploading anything you want to keep. Resume PDFs and project
+images already committed to the repo (`media/resume/`, `media/projects/`
+— see `.gitignore`) are unaffected either way, since those ship with the
+code itself.
 
 The free Postgres database is also time-limited (Render will show the
 exact expiry when it's created) — fine to get the site live now, but
