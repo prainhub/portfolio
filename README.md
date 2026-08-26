@@ -164,12 +164,16 @@ automatically.
    all of the vars below during the Blueprint setup screen (or you can
    fill them in anytime after under service → **Environment**):
    - A free **Cloudinary** account at [cloudinary.com](https://cloudinary.com)
-     (no card required) → dashboard → **Account Details** → copy the
-     **API Environment variable** (looks like
-     `cloudinary://123456789012345:AbC-dEfGhIjKlMnOpQrStUvWxYz@your-cloud-name`)
-     → this is `CLOUDINARY_URL`. Makes admin-uploaded images (Profile
-     photo/illustration, Project images) actually stick — see the note
-     below for why.
+     (no card required) → dashboard → **Account Details**, where you'll
+     see your **Cloud name**, **API Key**, and **API Secret** listed
+     separately — use those for `CLOUDINARY_CLOUD_NAME`,
+     `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` (easier and less
+     error-prone than assembling the combined URL yourself). Makes
+     admin-uploaded images (Profile photo/illustration, Project images)
+     actually stick — see the note below for why. (If you'd rather use
+     the single combined string instead, that page also shows an **API
+     Environment variable** field — that's `CLOUDINARY_URL`, and it takes
+     precedence over the three separate values if you set both.)
    - Your own `/admin/` login: pick a `DJANGO_SUPERUSER_USERNAME`,
      `DJANGO_SUPERUSER_EMAIL`, and a real `DJANGO_SUPERUSER_PASSWORD`.
      **The free plan has no Shell tab** to run `createsuperuser`
@@ -195,8 +199,8 @@ automatically.
 7. (Optional) Custom domain: dashboard → **Settings** → **Custom Domains**,
    then set `SITE_DOMAIN` / `SITE_URL` env vars to match.
 
-**Why images can disappear without `CLOUDINARY_URL`:** Render's free web
-service has an *ephemeral* filesystem — anything written at runtime
+**Why images can disappear without Cloudinary configured:** Render's free
+web service has an *ephemeral* filesystem — anything written at runtime
 (any image uploaded via `/admin/`) is wiped on the next deploy or
 restart. With `CLOUDINARY_URL` set (see step 3), those uploads go to
 Cloudinary instead of local disk, so they survive redeploys — do this

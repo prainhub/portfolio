@@ -144,13 +144,30 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Admin-uploaded media (Profile photo/illustration, Project image/
 # hero_image/screenshots) goes to local disk by default — fine in dev,
-# and on any host with a persistent filesystem. Set CLOUDINARY_URL to
-# move it to Cloudinary instead: required on hosts with an *ephemeral*
-# filesystem (e.g. Render's free tier), where anything written to disk
-# at runtime — including admin uploads — is wiped on the next deploy or
-# restart. cloudinary/cloudinary_storage read CLOUDINARY_URL from the
-# environment themselves once it's set; no further config needed here.
+# and on any host with a persistent filesystem. Set Cloudinary credentials
+# to move it to Cloudinary instead: required on hosts with an *ephemeral*
+# filesystem (e.g. Render's free tier), where anything written to disk at
+# runtime — including admin uploads — is wiped on the next deploy or
+# restart.
+#
+# Two ways to provide credentials — either works:
+#   1. Three separate vars (easier to paste correctly — no URL syntax to
+#      get right): CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY,
+#      CLOUDINARY_API_SECRET. Built into a CLOUDINARY_URL below.
+#   2. A single CLOUDINARY_URL (cloudinary://<api_key>:<api_secret>@<cloud_name>),
+#      if you already have that whole string from Cloudinary's dashboard.
+# Either way, the constructed/given value is put back into the process
+# environment: the cloudinary/cloudinary_storage packages read
+# CLOUDINARY_URL from there themselves once it's set — no further config
+# needed here.
 CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL", "").strip()
+if not CLOUDINARY_URL:
+    _cloud_name = os.environ.get("CLOUDINARY_CLOUD_NAME", "").strip()
+    _api_key = os.environ.get("CLOUDINARY_API_KEY", "").strip()
+    _api_secret = os.environ.get("CLOUDINARY_API_SECRET", "").strip()
+    if _cloud_name and _api_key and _api_secret:
+        CLOUDINARY_URL = f"cloudinary://{_api_key}:{_api_secret}@{_cloud_name}"
+        os.environ["CLOUDINARY_URL"] = CLOUDINARY_URL
 STORAGES = {
     "default": {
         "BACKEND": (

@@ -33,10 +33,19 @@ services:
       # Strongly recommended on the free plan: this service's filesystem
       # is wiped on every redeploy/restart, so admin-uploaded images
       # (Profile photo/illustration, Project images) won't stick around
-      # without it. Get a free CLOUDINARY_URL from cloudinary.com (Account
-      # Details -> API Environment variable) and paste it in — sync:false
-      # means Render will prompt for it when you Apply this blueprint, or
-      # you can add it anytime after under the service's Environment tab.
+      # without this. Get free credentials from cloudinary.com -> Account
+      # Details, and fill in EITHER the three separate values below
+      # (easier to paste correctly — no URL syntax to get right) OR
+      # CLOUDINARY_URL alone (the single "API Environment variable" —
+      # takes precedence if both are set). sync:false means Render
+      # prompts for these when you Apply this blueprint, or you can add
+      # them anytime after under the service's Environment tab.
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
       - key: CLOUDINARY_URL
         sync: false
       # Sets your /admin/ login — required, since the free plan has no
