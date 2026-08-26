@@ -150,18 +150,61 @@ python manage.py collectstatic --noinput
 
 ## Deployment
 
+### Deploying to Render (recommended — free tier)
+
+The repo includes `render.yaml`, a Render "Blueprint" that provisions the
+web service and a free Postgres database together and wires them up
+automatically.
+
+1. Push this repo to your own GitHub account (fork it, or push this branch
+   to a repo you own — Render deploys from a repo you control).
+2. Create a free account at [render.com](https://render.com) and connect
+   your GitHub account.
+3. Dashboard → **New +** → **Blueprint** → pick the repo → **Apply**.
+   Render reads `render.yaml`, creates the web service + database, and
+   generates a real `SECRET_KEY` automatically.
+4. First deploy takes a few minutes (installs deps, runs migrations,
+   collects static files, seeds the real portfolio content). When it's
+   done you'll have a live URL like `https://prajin-portfolio.onrender.com`.
+5. (Optional, for `/admin/`) Open a shell for the service — dashboard →
+   **Shell** tab — and run:
+   ```bash
+   python manage.py createsuperuser
+   ```
+6. (Optional) Custom domain: dashboard → **Settings** → **Custom Domains**,
+   then set `SITE_DOMAIN` / `SITE_URL` env vars to match.
+
+**Uploaded images will not survive a redeploy on the free plan.** Render's
+free web service has an *ephemeral* filesystem — anything written at
+runtime (profile photo/illustration uploaded via `/admin/`, or any project
+image not already committed to `media/` in git) is wiped on the next
+deploy or restart. Resume PDFs and project images already committed to
+the repo (`media/resume/`, `media/projects/` — see `.gitignore`) are fine,
+since those ship with the code. For photos/illustrations you upload via
+admin to actually persist long-term, either re-upload them after each
+redeploy, or move to persistent storage later (a Render paid disk, or an
+object store like Cloudinary/S3 via `django-storages` — ask if you want
+this wired up).
+
+The free Postgres database is also time-limited (Render will show the
+exact expiry when it's created) — fine to get the site live now, but
+you'll want to upgrade or recreate it before it expires.
+
+### Deploying elsewhere (manual)
+
 1. Set real env vars (`SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`,
    `DATABASE_URL`, `CSRF_TRUSTED_ORIGINS`, email settings).
 2. `pip install -r requirements.txt`
 3. `python manage.py migrate`
 4. `python manage.py collectstatic --noinput`
-5. Serve with a real application server — **not** `manage.py runserver`:
+5. `python manage.py seed_portfolio` (idempotent — safe to re-run)
+6. Serve with a real application server — **not** `manage.py runserver`:
    ```bash
    gunicorn config.wsgi:application --bind 0.0.0.0:8000
    # or
    uvicorn config.asgi:application --host 0.0.0.0 --port 8000
    ```
-6. Put a reverse proxy (nginx, Caddy, your platform's router) in front for
+7. Put a reverse proxy (nginx, Caddy, your platform's router) in front for
    TLS termination. With `DEBUG=False`, `SECURE_SSL_REDIRECT`, HSTS, and
    secure cookies are enabled automatically (see `config/settings.py`).
 

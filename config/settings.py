@@ -34,6 +34,15 @@ DEBUG = env_bool("DEBUG", default=True)
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "localhost,127.0.0.1")
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS", "")
 
+# Render sets this automatically to the service's *.onrender.com hostname —
+# picking it up here means the free onrender.com URL works with no manual
+# ALLOWED_HOSTS/CSRF_TRUSTED_ORIGINS edits. A later custom domain still
+# needs to be added explicitly via the env vars above.
+RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "").strip()
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
+
 SITE_NAME = os.environ.get("SITE_NAME", "Prajin S | Portfolio")
 SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "localhost:8000")
 SITE_URL = os.environ.get("SITE_URL", f"http://{SITE_DOMAIN}")
