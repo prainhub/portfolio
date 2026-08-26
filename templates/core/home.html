@@ -90,6 +90,32 @@
     </div>
   </div>
 
+  <!-- Mobile-only: the two desktop flanking marquees collapse to a single
+       compact scrolling row here instead (see .hero-mobile-strip, hidden
+       above 860px). Reuses the same 4 projects + card styling. -->
+  <div class="hero-mobile-strip" aria-hidden="true">
+    <div class="hero-mobile-track">
+      {% for project in projects|slice:":4" %}
+      <div class="hero-flank-card hero-mobile-card">
+        {% if project.hero_image %}
+        <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
+        {% else %}
+        <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% for project in projects|slice:":4" %}
+      <div class="hero-flank-card hero-mobile-card">
+        {% if project.hero_image %}
+        <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
+        {% else %}
+        <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
   <a href="#about" class="hero-explore">
     <span>Explore</span>
     <span class="hero-explore-arrow">↓</span>
