@@ -377,6 +377,64 @@
     });
   }
 
+  /* ---------------- Email links: copy to clipboard on click -------------
+     mailto: only does anything if the visitor's OS/browser has a default
+     mail app registered — plenty don't (webmail-only users especially).
+     Leave the mailto: href alone (it still fires for anyone who does have
+     one) and additionally copy the address so it's always usable. */
+  function initEmailCopy() {
+    var links = document.querySelectorAll('a[href^="mailto:"]');
+    if (!links.length) return;
+
+    var toast = document.createElement("div");
+    toast.className = "email-copy-toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+    document.body.appendChild(toast);
+    var hideTimer = null;
+
+    function copyText(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise(function (resolve, reject) {
+        try {
+          var ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+
+    links.forEach(function (link) {
+      link.addEventListener("click", function () {
+        var email = link.getAttribute("href").replace(/^mailto:/, "").split("?")[0];
+        if (!email) return;
+        copyText(email)
+          .then(function () {
+            toast.textContent = "Copied " + email + " to clipboard";
+            toast.classList.add("is-visible");
+            window.clearTimeout(hideTimer);
+            hideTimer = window.setTimeout(function () {
+              toast.classList.remove("is-visible");
+            }, 2200);
+          })
+          .catch(function () {
+            /* Clipboard unavailable — mailto: already fired above, nothing more to do. */
+          });
+      });
+    });
+  }
+
   /* ---------------- Contact form (fetch, graceful fallback) ------------ */
   function initContactForm() {
     var form = document.getElementById("contact-form");
@@ -585,6 +643,7 @@
     initRoleCycle();
     initProjectFilter();
     initSkillTabs();
+    initEmailCopy();
     initContactForm();
     initHeroCanvas();
     initCounters();

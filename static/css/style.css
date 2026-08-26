@@ -613,6 +613,17 @@ body.is-loading { overflow: hidden; height: 100vh; }
 }
 .skip-link:focus { left: 1rem; top: 1rem; }
 
+/* ---------- Email-copy toast ---------- */
+.email-copy-toast {
+  position: fixed; left: 50%; bottom: 32px; z-index: 250;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--text); color: var(--bg); font-family: var(--font-mono); font-size: 0.82rem;
+  padding: 0.75rem 1.3rem; border-radius: var(--radius-pill); box-shadow: var(--shadow);
+  opacity: 0; pointer-events: none; max-width: calc(100vw - 2.5rem); text-align: center;
+  transition: opacity var(--dur-med) var(--ease), transform var(--dur-med) var(--ease);
+}
+.email-copy-toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 /* ---------- Kinetic word reveal (hero) ---------- */
 .word-mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; }
 .word-mask .word {
