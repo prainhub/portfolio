@@ -17,109 +17,13 @@
     </div>
   </div>
 
+  {% if profile.hero_background_video %}
   <div class="hero-stage">
-    {% if profile.hero_background_video %}
     <video class="hero-bg-video" autoplay muted loop playsinline aria-hidden="true">
       <source src="{{ profile.hero_background_video.url }}" type="{{ profile.hero_background_video.url|video_mime }}">
     </video>
-    {% endif %}
-    <div class="hero-flank hero-flank-left" aria-hidden="true">
-      <div class="hero-flank-track">
-        {% for project in projects|slice:":2" %}
-        <div class="hero-flank-card">
-          {% if project.hero_image %}
-          <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
-          {% else %}
-          <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
-          {% endif %}
-        </div>
-        {% endfor %}
-        {% for project in projects|slice:":2" %}
-        <div class="hero-flank-card">
-          {% if project.hero_image %}
-          <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
-          {% else %}
-          <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
-          {% endif %}
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <div class="hero-character">
-      <div class="hero-character-art">
-        {% if profile.illustration %}
-        <div class="hero-illustration reveal-media">
-          <img src="{{ profile.illustration.url }}" alt="{{ profile.full_name }}" loading="lazy">
-        </div>
-        {% else %}
-        <div class="hero-visual">
-          <div class="hero-visual-ring" aria-hidden="true"></div>
-          <canvas class="node-canvas" aria-hidden="true"></canvas>
-          {% if profile.photo %}
-          <div class="hero-photo reveal-media">
-            <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" loading="lazy">
-          </div>
-          {% endif %}
-        </div>
-        {% endif %}
-      </div>
-      <div class="hero-character-caption">
-        <span>{{ profile.headline|default:"Python Developer | Junior AI Engineer"|upper }}</span>
-        <span class="dot" aria-hidden="true"></span>
-        <span>AI ENGINEERING · FULL&#8209;STACK</span>
-      </div>
-    </div>
-
-    <div class="hero-flank hero-flank-right" aria-hidden="true">
-      <div class="hero-flank-track">
-        {% for project in projects|slice:"2:4" %}
-        <div class="hero-flank-card">
-          {% if project.hero_image %}
-          <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
-          {% else %}
-          <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
-          {% endif %}
-        </div>
-        {% endfor %}
-        {% for project in projects|slice:"2:4" %}
-        <div class="hero-flank-card">
-          {% if project.hero_image %}
-          <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
-          {% else %}
-          <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
-          {% endif %}
-        </div>
-        {% endfor %}
-      </div>
-    </div>
   </div>
-
-  <!-- Mobile-only: the two desktop flanking marquees collapse to a single
-       compact scrolling row here instead (see .hero-mobile-strip, hidden
-       above 860px). Reuses the same 4 projects + card styling. -->
-  <div class="hero-mobile-strip" aria-hidden="true">
-    <div class="hero-mobile-track">
-      {% for project in projects|slice:":4" %}
-      <div class="hero-flank-card hero-mobile-card">
-        {% if project.hero_image %}
-        <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
-        {% else %}
-        <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
-        {% endif %}
-      </div>
-      {% endfor %}
-      {% for project in projects|slice:":4" %}
-      <div class="hero-flank-card hero-mobile-card">
-        {% if project.hero_image %}
-        <img src="{{ project.hero_image.url }}" alt="" loading="lazy">
-        {% else %}
-        <div class="hero-flank-fallback">{{ project.get_category_display }}</div>
-        {% endif %}
-      </div>
-      {% endfor %}
-    </div>
-  </div>
+  {% endif %}
 
   <a href="#about" class="hero-explore">
     <span>Explore</span>

@@ -495,85 +495,6 @@
     });
   }
 
-  /* ---------------- Hero node network (canvas, lightweight) ------------ */
-  function initHeroCanvas() {
-    var canvas = document.querySelector(".node-canvas");
-    if (!canvas || prefersReducedMotion) return;
-    var ctx = canvas.getContext("2d");
-    var nodes = [];
-    var NODE_COUNT = 26;
-    var width, height, dpr;
-
-    function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    function seed() {
-      nodes = [];
-      for (var i = 0; i < NODE_COUNT; i++) {
-        nodes.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.25,
-          vy: (Math.random() - 0.5) * 0.25,
-          r: Math.random() * 1.6 + 1,
-        });
-      }
-    }
-
-    var accent = "124, 108, 255";
-
-    function frame() {
-      ctx.clearRect(0, 0, width, height);
-      nodes.forEach(function (n) {
-        n.x += n.vx;
-        n.y += n.vy;
-        if (n.x < 0 || n.x > width) n.vx *= -1;
-        if (n.y < 0 || n.y > height) n.vy *= -1;
-      });
-      for (var i = 0; i < nodes.length; i++) {
-        for (var j = i + 1; j < nodes.length; j++) {
-          var a = nodes[i], b = nodes[j];
-          var dx = a.x - b.x, dy = a.y - b.y;
-          var dist = Math.sqrt(dx * dx + dy * dy);
-          var maxDist = width * 0.22;
-          if (dist < maxDist) {
-            ctx.strokeStyle = "rgba(" + accent + "," + (1 - dist / maxDist) * 0.35 + ")";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
-      }
-      nodes.forEach(function (n) {
-        ctx.fillStyle = "rgba(" + accent + ",0.85)";
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      requestAnimationFrame(frame);
-    }
-
-    resize();
-    seed();
-    frame();
-    window.addEventListener(
-      "resize",
-      function () {
-        resize();
-        seed();
-      },
-      { passive: true }
-    );
-  }
-
   /* ---------------- Cycling role headline (hero) ------------------------ */
   function initRoleCycle() {
     var container = document.querySelector("[data-role-cycle]");
@@ -645,7 +566,6 @@
     initSkillTabs();
     initEmailCopy();
     initContactForm();
-    initHeroCanvas();
     initCounters();
   });
 })();
