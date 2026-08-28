@@ -310,8 +310,7 @@ body.is-loading { overflow: hidden; height: 100vh; }
 .hero-bg-video {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
-  opacity: 0.32; pointer-events: none;
-  mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+  pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-bg-video { display: none; }

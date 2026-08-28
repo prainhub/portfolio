@@ -66,11 +66,11 @@ class Profile(models.Model):
         null=True,
         validators=[FileExtensionValidator(allowed_extensions=["mp4", "webm", "mov"])],
         help_text=(
-            "Looping background video behind the hero's floating project "
-            "cards and photo. Optional — keep it short (a few seconds), "
-            "silent, and heavily compressed (a few MB at most) since it "
-            "autoplays muted and loops on every visit. Hidden entirely "
-            "under prefers-reduced-motion."
+            "Looping background video shown full-bleed beneath the hero "
+            "headline. Optional — keep it short (a few seconds), silent, "
+            "and heavily compressed (a few MB at most) since it autoplays "
+            "muted and loops on every visit. Hidden entirely under "
+            "prefers-reduced-motion."
         ),
     )
 
