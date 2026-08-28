@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Page not found — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="error-page">
+  <div class="grid-noise" aria-hidden="true"></div>
+  <span class="error-code">404</span>
+  <h1 class="section-title">This page doesn't exist</h1>
+  <p class="section-lede" style="margin-inline:auto;">The link might be broken, or the page may have moved.</p>
+  <a class="btn btn-primary" href="{% url 'core:home' %}">Back to home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+# Render "Blueprint" — https://render.com/docs/blueprint-spec
+# In the Render dashboard: New + -> Blueprint -> pick this repo -> Apply.
+# Provisions the web service and a free Postgres database together, and
+# wires DATABASE_URL between them automatically.
+services:
+  - type: web
+    name: prajin-portfolio
+    runtime: python
+    plan: free
+    branch: claude/personal-portfolio-django-21rn6c
+    buildCommand: >-
+      pip install -r requirements.txt &&
+      python manage.py migrate --noinput &&
+      python manage.py collectstatic --noinput &&
+      python manage.py seed_portfolio &&
+      python manage.py ensure_superuser
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: localhost,127.0.0.1
+      - key: SITE_NAME
+        value: "Prajin S | Portfolio"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: prajin-portfolio-db
+          property: connectionString
+      # Strongly recommended on the free plan: this service's filesystem
+      # is wiped on every redeploy/restart, so admin-uploaded images
+      # (Profile photo/illustration, Project images) won't stick around
+      # without this. Get free credentials from cloudinary.com -> Account
+      # Details, and fill in EITHER the three separate values below
+      # (easier to paste correctly — no URL syntax to get right) OR
+      # CLOUDINARY_URL alone (the single "API Environment variable" —
+      # takes precedence if both are set). sync:false means Render
+      # prompts for these when you Apply this blueprint, or you can add
+      # them anytime after under the service's Environment tab.
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: CLOUDINARY_URL
+        sync: false
+      # Sets your /admin/ login — required, since the free plan has no
+      # Shell tab to run `createsuperuser` interactively (that needs a
+      # paid instance type). ensure_superuser (run on every build, see
+      # above) creates this account from these on first deploy and never
+      # touches its password again afterwards, so changing your password
+      # in /admin/ later is safe — it won't get reset by a later deploy.
+      - key: DJANGO_SUPERUSER_USERNAME
+        sync: false
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+      # Fill these in later (dashboard -> Environment) once you have them —
+      # every one is optional and the site degrades gracefully without it:
+      #   GITHUB_USERNAME, RESUME_FILE_NAME, EMAIL_HOST / EMAIL_HOST_USER /
+      #   EMAIL_HOST_PASSWORD / CONTACT_NOTIFY_EMAIL (real contact-form
+      #   email delivery), SITE_DOMAIN / SITE_URL (once you attach a custom
+      #   domain — see README "Deploying to Render").
+
+databases:
+  - name: prajin-portfolio-db
+    plan: free

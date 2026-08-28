@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+{% load static portfolio_extras %}
+
+{% block content %}
+
+<!-- ============ HERO ============ -->
+<section id="home" class="hero">
+
+  <div class="container hero-top reveal is-visible">
+    <p class="hero-eyebrow"><span class="dot"></span>Available for fresher opportunities</p>
+    <h1 class="hero-poster-title">{{ profile.full_name|default:"Prajin S" }}</h1>
+    <div class="hero-role-cycle" data-role-cycle>
+      <span class="is-active">Python Developer</span>
+      <span>Intern at TechJays</span>
+      <span>AI Engineering</span>
+      <span>Full&#8209;Stack Development</span>
+    </div>
+  </div>
+
+  {% if profile.hero_background_video %}
+  <div class="hero-stage">
+    <video class="hero-bg-video" autoplay muted loop playsinline aria-hidden="true">
+      <source src="{{ profile.hero_background_video.url }}" type="{{ profile.hero_background_video.url|video_mime }}">
+    </video>
+  </div>
+  {% endif %}
+
+  <a href="#about" class="hero-explore">
+    <span>Explore</span>
+    <span class="hero-explore-arrow">↓</span>
+  </a>
+
+  <div class="container hero-bottom reveal">
+    <p class="hero-statement"><strong>{{ profile.tagline|default:"I build AI-powered applications and Python backends." }}</strong></p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#contact" class="btn btn-outline">Contact Me</a>
+      {% if resume_available %}<a href="{% url 'core:resume_download' %}" class="btn btn-outline">Download Resume</a>{% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUICK SNAPSHOT ============ -->
+<section class="snapshot">
+  <div class="snapshot-grid">
+    <div class="snapshot-item reveal">
+      <div class="snapshot-value">{{ snapshot.current_education.degree|default:"B.Tech" }} <span class="accent">IT</span></div>
+      <div class="snapshot-label">Graduate</div>
+    </div>
+    <div class="snapshot-item reveal">
+      <div class="snapshot-value"><span data-countup="{{ snapshot.projects_count }}">0</span><span class="accent">+</span></div>
+      <div class="snapshot-label">Projects shipped</div>
+    </div>
+    <div class="snapshot-item reveal">
+      <div class="snapshot-value"><span data-countup="{{ snapshot.internships_count }}">0</span></div>
+      <div class="snapshot-label">Internships completed</div>
+    </div>
+    <div class="snapshot-item reveal">
+      <div class="snapshot-value"><span data-countup="{{ snapshot.technologies_count }}">0</span><span class="accent">+</span></div>
+      <div class="snapshot-label">Technologies used</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SIDE PANELS ============
+     Every nav section opens here as a slide-in drawer instead of a long
+     scroll. Only one is open at a time — see initPanels() in main.js. -->
+
+<!-- ---- About ---- -->
+<aside class="side-panel" data-lenis-prevent id="about" role="dialog" aria-modal="true" aria-labelledby="panel-about-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">About</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-about-title">Who I am</h2>
+    <div class="about-grid">
+      <div class="about-primary reveal is-visible">
+        {% if profile.photo %}
+        <div class="about-photo">
+          <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" loading="lazy">
+        </div>
+        {% endif %}
+        <div class="about-copy">
+          {% for para in profile.summary|split_paragraphs %}
+          <p>{{ para }}</p>
+          {% endfor %}
+        </div>
+      </div>
+      <dl class="about-facts reveal is-visible">
+        <div class="about-fact"><dt>Focus</dt><dd>Python Developer &amp; Junior AI Engineer</dd></div>
+        <div class="about-fact"><dt>Currently</dt><dd>B.Tech IT Graduate</dd></div>
+        <div class="about-fact"><dt>Core stack</dt><dd>Python, Django, FastAPI, REST APIs</dd></div>
+        <div class="about-fact"><dt>AI stack</dt><dd>OpenAI API, Gemini API, NLP</dd></div>
+        <div class="about-fact"><dt>Looking for</dt><dd>{{ profile.looking_for|default:"Fresher Python Developer / Junior AI Engineer roles" }}</dd></div>
+        {% if profile.location %}<div class="about-fact"><dt>Based in</dt><dd>{{ profile.location }}</dd></div>{% endif %}
+      </dl>
+    </div>
+
+    {% if currently_learning %}
+    <div class="panel-block">
+      <h3>Currently learning</h3>
+      <div class="tag-row">
+        {% for item in currently_learning %}
+        <span class="badge badge-accent" title="{{ item.description }}">{{ item.title }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if resume_available %}
+    <div class="panel-block">
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-sm" href="{% url 'core:resume_download' %}">Download Resume</a>
+        <a class="btn btn-outline btn-sm" href="{% url 'core:resume_view' %}" target="_blank" rel="noopener">View Resume</a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</aside>
+
+<!-- ---- Experience ---- -->
+<aside class="side-panel" data-lenis-prevent id="experience" role="dialog" aria-modal="true" aria-labelledby="panel-experience-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Experience</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-experience-title">Internships</h2>
+    <div class="timeline">
+      {% for exp in experiences %}
+      <div class="timeline-item reveal is-visible">
+        <span class="timeline-dot" aria-hidden="true"></span>
+        <div class="timeline-head">
+          <h3 class="timeline-role">{{ exp.role }} — <span class="timeline-company">{{ exp.company }}</span></h3>
+          <span class="timeline-meta">{{ exp.timeframe }}{% if exp.location %} · {{ exp.location }}{% endif %}</span>
+        </div>
+        {% for line in exp.description_lines %}
+        <p class="timeline-desc">{{ line }}</p>
+        {% endfor %}
+        {% if exp.technology_list %}
+        <div class="timeline-tags">
+          {% for tech in exp.technology_list %}<span class="badge">{{ tech }}</span>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% empty %}
+      <p class="panel-lede">Experience will appear here once added in the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</aside>
+
+<!-- ---- Skills ---- -->
+<aside class="side-panel" data-lenis-prevent id="skills" role="dialog" aria-modal="true" aria-labelledby="panel-skills-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Skills</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-skills-title">What I work with</h2>
+    <div class="skills-tabs reveal is-visible" role="tablist">
+      {% for key, label in skill_categories %}
+      <button class="skills-tab {% if forloop.first %}is-active{% endif %}" type="button" data-tab="{{ key }}" role="tab">{{ label }}</button>
+      {% endfor %}
+    </div>
+    <div class="skills-panels reveal is-visible">
+      {% for key, label in skill_categories %}
+      <div class="skills-panel {% if forloop.first %}is-active{% endif %}" data-panel="{{ key }}">
+        {% for skill in skills_by_category|get_item:key %}
+        <div class="skill-card">
+          <span class="skill-glyph">{{ skill.icon|default:skill.name|slice:":2"|upper }}</span>
+          <span class="skill-name">{{ skill.name }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</aside>
+
+<!-- ---- Projects ---- -->
+<aside class="side-panel" data-lenis-prevent id="projects" role="dialog" aria-modal="true" aria-labelledby="panel-projects-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Projects</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-projects-title">Featured work</h2>
+    <div class="filter-row reveal is-visible">
+      <button class="filter-btn is-active" type="button" data-filter="all">All</button>
+      {% for key, label in project_categories %}
+      <button class="filter-btn" type="button" data-filter="{{ key }}">{{ label }}</button>
+      {% endfor %}
+    </div>
+    <div class="project-grid">
+      {% for project in projects %}
+      <article class="project-card reveal is-visible {% if project.featured %}project-card--featured{% endif %}" data-category="{{ project.category }}">
+        <a class="project-media" href="{{ project.get_absolute_url }}" aria-label="View case study: {{ project.title }}">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy">
+          {% else %}
+          <div class="project-media-fallback">{{ project.get_category_display }}</div>
+          {% endif %}
+          <span class="badge badge-accent project-cat">{{ project.get_category_display }}</span>
+        </a>
+        <div class="project-body">
+          <div class="project-title-row">
+            <h3 class="project-title">{{ project.title }}</h3>
+            {% if project.timeframe %}<span class="project-time">{{ project.timeframe }}</span>{% endif %}
+          </div>
+          <p class="project-desc">{{ project.short_description }}</p>
+          <div class="project-tags">
+            {% for tech in project.technology_list|slice:":4" %}<span class="badge">{{ tech }}</span>{% endfor %}
+          </div>
+          <div class="project-links">
+            <a class="btn btn-sm btn-outline" href="{{ project.get_absolute_url }}">Case study</a>
+            {% if project.github_url %}<a class="btn btn-sm btn-ghost" href="{{ project.github_url }}" target="_blank" rel="noopener">GitHub ↗</a>{% endif %}
+            {% if project.live_url %}<a class="btn btn-sm btn-ghost" href="{{ project.live_url }}" target="_blank" rel="noopener">Live ↗</a>{% endif %}
+          </div>
+        </div>
+      </article>
+      {% empty %}
+      <p class="panel-lede">Projects will appear here once added in the admin.</p>
+      {% endfor %}
+    </div>
+
+    {% if github %}
+    <div class="panel-block">
+      <h3>On GitHub</h3>
+      <div class="gh-stats reveal is-visible">
+        <div><div class="gh-stat-value">{{ github.public_repos }}</div><div class="gh-stat-label">Public repos</div></div>
+        <div><div class="gh-stat-value">{{ github.followers }}</div><div class="gh-stat-label">Followers</div></div>
+        <a class="btn btn-outline btn-sm" href="{{ github.profile_url }}" target="_blank" rel="noopener" style="align-self:center;">View profile ↗</a>
+      </div>
+      <div class="tag-row" style="margin-top:1rem;">
+        {% for repo in github.repos|slice:":3" %}
+        <a class="badge" href="{{ repo.url }}" target="_blank" rel="noopener">{{ repo.name }} · {{ repo.language|default:"—" }}</a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</aside>
+
+<!-- ---- Education ---- -->
+<aside class="side-panel" data-lenis-prevent id="education" role="dialog" aria-modal="true" aria-labelledby="panel-education-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Education</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-education-title">Academic background</h2>
+    <div class="timeline">
+      {% for edu in education %}
+      <div class="timeline-item reveal is-visible">
+        <span class="timeline-dot" aria-hidden="true"></span>
+        <div class="timeline-head">
+          <h3 class="timeline-role">{{ edu.degree }}{% if edu.field %} — {{ edu.field }}{% endif %}</h3>
+          <span class="timeline-meta">{{ edu.year_range }}</span>
+        </div>
+        <p class="timeline-desc">{{ edu.institution }}{% if edu.grade %} · {{ edu.grade }}{% endif %}</p>
+        {% if edu.description %}<p class="timeline-desc">{{ edu.description }}</p>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</aside>
+
+<!-- ---- Certifications ---- -->
+<aside class="side-panel" data-lenis-prevent id="certifications" role="dialog" aria-modal="true" aria-labelledby="panel-certifications-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Certifications</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-certifications-title">Certifications</h2>
+    <div class="cert-grid">
+      {% for cert in certifications %}
+      <div class="cert-card reveal is-visible">
+        <div class="cert-name">{{ cert.name }}</div>
+        <div class="cert-org">{{ cert.organization }}</div>
+        <div class="cert-date">{{ cert.issue_date }}</div>
+        {% if cert.credential_url %}<a class="cert-link" href="{{ cert.credential_url }}" target="_blank" rel="noopener">Verify credential ↗</a>{% endif %}
+      </div>
+      {% empty %}
+      <p class="panel-lede">Certifications will appear here once added in the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</aside>
+
+<!-- ---- Contact ---- -->
+<aside class="side-panel" data-lenis-prevent id="contact" role="dialog" aria-modal="true" aria-labelledby="panel-contact-title" aria-hidden="true">
+  <div class="panel-topbar">
+    <p class="panel-eyebrow">Contact</p>
+    <button class="panel-close" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-inner">
+    <h2 class="panel-title" id="panel-contact-title">Let's talk</h2>
+    <p class="panel-lede">Hiring for a fresher Python / AI engineering role, or want to talk about a project? Reach out.</p>
+    <div class="contact-grid">
+      <div class="reveal is-visible">
+        {% if profile.email %}
+        <div class="contact-info-item">
+          <span class="icon-link" aria-hidden="true">✉</span>
+          <div><div class="cert-org">Email</div><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></div>
+        </div>
+        {% endif %}
+        {% if profile.phone %}
+        <div class="contact-info-item">
+          <span class="icon-link" aria-hidden="true">☎</span>
+          <div><div class="cert-org">Phone</div><a href="tel:+91{{ profile.phone }}">+91 {{ profile.phone }}</a></div>
+        </div>
+        {% endif %}
+        {% if profile.location %}
+        <div class="contact-info-item">
+          <span class="icon-link" aria-hidden="true">📍</span>
+          <div><div class="cert-org">Location</div><span>{{ profile.location }}</span></div>
+        </div>
+        {% endif %}
+      </div>
+      <form id="contact-form" class="contact-form reveal is-visible" action="{% url 'core:contact' %}" method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="field">
+            <label for="id_name">Name</label>
+            {{ contact_form.name }}
+            {% for error in contact_form.name.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="field">
+            <label for="id_email">Email</label>
+            {{ contact_form.email }}
+            {% for error in contact_form.email.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+        </div>
+        <div class="field">
+          <label for="id_subject">Subject</label>
+          {{ contact_form.subject }}
+          {% for error in contact_form.subject.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+        </div>
+        <div class="field">
+          <label for="id_message">Message</label>
+          {{ contact_form.message }}
+          {% for error in contact_form.message.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+        </div>
+        <button class="btn btn-primary contact-submit" type="submit">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-label">Send message</span>
+        </button>
+        <div class="form-status" role="status" aria-live="polite" {% if contact_success %}data-success="1"{% endif %}></div>
+        {% if contact_success %}
+        <script>document.addEventListener("DOMContentLoaded", function(){ var s=document.querySelector(".form-status"); s.textContent="Thanks — your message has been sent."; s.className="form-status is-success"; });</script>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</aside>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Server error — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="error-page">
+  <div class="grid-noise" aria-hidden="true"></div>
+  <span class="error-code">500</span>
+  <h1 class="section-title">Something went wrong on my end</h1>
+  <p class="section-lede" style="margin-inline:auto;">This has been logged — please try again shortly, or reach out directly.</p>
+  <a class="btn btn-primary" href="{% url 'core:home' %}">Back to home</a>
+</div>
+{% endblock %}
