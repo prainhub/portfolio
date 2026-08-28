@@ -300,10 +300,24 @@ body.is-loading { overflow: hidden; height: 100vh; }
 /* Full-bleed stage: giant title above, character centered between two
    rows of project screenshots that fade out toward the viewport edge. */
 .hero-stage {
+  position: relative;
   width: 100vw; margin-inline: calc(50% - 50vw);
   display: flex; align-items: center; justify-content: center; gap: clamp(0.75rem, 3vw, 3rem);
   padding-inline: var(--gutter);
 }
+/* Optional looping background video (Profile.hero_background_video) —
+   sits behind the flanking cards and photo, which keep their own opaque
+   backgrounds so it only shows through the gaps/edges around them. */
+.hero-bg-video {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0.32; pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg-video { display: none; }
+}
+.hero-flank, .hero-character { position: relative; z-index: 1; }
 .hero-flank { flex: 1 1 0; overflow: hidden; min-width: 0; max-width: 420px; }
 .hero-flank-left { mask-image: linear-gradient(to right, transparent, black 55%); }
 .hero-flank-right { mask-image: linear-gradient(to left, transparent, black 55%); }

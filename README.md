@@ -126,6 +126,17 @@ Everything in `/admin/` is editable without touching code:
   (matches the current hero layout). Takes priority over `photo` in the
   hero when both are set. Optional — the hero falls back to the AI
   particle ring alone if neither is uploaded.
+- **Profile → hero_background_video** — an optional looping video behind
+  the hero's flanking project cards and photo. Autoplays muted, loops,
+  hidden entirely under `prefers-reduced-motion`. Keep it short (a few
+  seconds), silent, and heavily compressed — a large file will hurt page
+  load. `.mp4` (H.264) works in real browsers, but `.webm` (VP9) has
+  broader guaranteed codec support (some Chromium builds, including
+  headless/CI ones, lack a licensed H.264 decoder) — `.webm` is the
+  safer choice if you're not sure. Uploads go through the same
+  Cloudinary storage as your other images once `CLOUDINARY_URL`/the
+  separate Cloudinary env vars are set (see "Deploying to Render"),
+  using Cloudinary's video resource type.
 - **Project → image / screenshots** — used on the Projects section card and
   the project detail page.
 - **Project → hero_image** — a separate image shown only in the homepage

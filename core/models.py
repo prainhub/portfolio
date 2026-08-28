@@ -1,6 +1,24 @@
-from django.core.validators import MinLengthValidator
+from django.conf import settings
+from django.core.validators import FileExtensionValidator, MinLengthValidator
 from django.db import models
 from django.urls import reverse
+
+
+def _hero_video_storage():
+    """Video needs Cloudinary's 'video' resource type, not the 'image' one
+    MediaCloudinaryStorage (used for photo/illustration) is hardcoded to —
+    mirrors the CLOUDINARY_URL check in settings.py's STORAGES config.
+    Otherwise defers to whatever STORAGES["default"] already resolves to
+    (local disk in dev) rather than assuming FileSystemStorage directly.
+    A callable (not a resolved instance) so Django defers resolving it to
+    runtime rather than baking a fixed choice into a migration file."""
+    if getattr(settings, "CLOUDINARY_URL", ""):
+        from cloudinary_storage.storage import VideoMediaCloudinaryStorage
+
+        return VideoMediaCloudinaryStorage()
+    from django.core.files.storage import storages
+
+    return storages["default"]
 
 
 class Profile(models.Model):
@@ -39,6 +57,20 @@ class Profile(models.Model):
         help_text=(
             "Stylised/illustrated character art, shown centered in the hero. "
             "Optional — the hero falls back to the AI particle visual alone."
+        ),
+    )
+    hero_background_video = models.FileField(
+        upload_to="profile/video/",
+        storage=_hero_video_storage,
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=["mp4", "webm", "mov"])],
+        help_text=(
+            "Looping background video behind the hero's floating project "
+            "cards and photo. Optional — keep it short (a few seconds), "
+            "silent, and heavily compressed (a few MB at most) since it "
+            "autoplays muted and loops on every visit. Hidden entirely "
+            "under prefers-reduced-motion."
         ),
     )
 

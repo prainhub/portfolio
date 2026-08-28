@@ -18,6 +18,11 @@
   </div>
 
   <div class="hero-stage">
+    {% if profile.hero_background_video %}
+    <video class="hero-bg-video" autoplay muted loop playsinline aria-hidden="true">
+      <source src="{{ profile.hero_background_video.url }}" type="{{ profile.hero_background_video.url|video_mime }}">
+    </video>
+    {% endif %}
     <div class="hero-flank hero-flank-left" aria-hidden="true">
       <div class="hero-flank-track">
         {% for project in projects|slice:":2" %}

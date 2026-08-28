@@ -26,3 +26,21 @@ def get_item(mapping, key):
     if not mapping:
         return []
     return mapping.get(key, [])
+
+
+_VIDEO_MIME_TYPES = {
+    "mp4": "video/mp4",
+    "webm": "video/webm",
+    "mov": "video/quicktime",
+}
+
+
+@register.filter
+def video_mime(url):
+    """Guess a <source type="..."> value from a video file's extension —
+    without it browsers have to sniff the file to pick a codec, which is
+    slower and occasionally unreliable."""
+    if not url:
+        return ""
+    ext = str(url).rsplit(".", 1)[-1].lower()
+    return _VIDEO_MIME_TYPES.get(ext, "")
